@@ -88,9 +88,57 @@
         border: 2px solid rgba(255,255,255,0.3);
         box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
     }
+
+    /* ── CHART SCROLL WRAPPER ── */
+    .chart-scroll-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #DDE5F0 transparent;
+        padding-bottom: 4px;
+    }
+    .chart-scroll-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+    .chart-scroll-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .chart-scroll-wrapper::-webkit-scrollbar-thumb {
+        background: #DDE5F0;
+        border-radius: 99px;
+    }
+
+    /* Scroll hint fade untuk mobile */
+    .chart-scroll-hint {
+        position: absolute;
+        top: 0; right: 0;
+        width: 48px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.9));
+        pointer-events: none;
+        border-radius: 0 0 16px 0;
+        transition: opacity 0.3s;
+    }
+    .chart-scroll-hint.hidden {
+        opacity: 0;
+    }
+
+    /* Scroll indicator badge */
+    .scroll-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #94A3B8;
+        padding: 3px 8px;
+        background: #F1F5F9;
+        border-radius: 99px;
+        border: 1px solid #E2E8F0;
+    }
 </style>
 
-{{-- PADDING LUAR DISESUAIKAN UNTUK MOBILE (p-4) DAN PC (px-6) --}}
 <div class="w-full min-h-screen bg-[#F0F4FA] space-y-6 sm:space-y-8 p-4 sm:px-6 pb-12">
 
     {{-- ══════════ PAGE HEADER ══════════ --}}
@@ -284,10 +332,16 @@
                 </div>
                 <p class="ml-4 sm:ml-5 text-xs sm:text-sm text-[#64748B]">
                     Riwayat berat dan tinggi badan anak beserta acuan standar WHO.
+                    <span class="scroll-badge ml-2 sm:hidden">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        Geser untuk data lama
+                    </span>
                 </p>
             </div>
 
-            {{-- Chart: Berat Badan --}}
+            {{-- ══ Chart: Berat Badan ══ --}}
             <div class="chart-container bg-white rounded-2xl border border-[#FFE0CC] shadow-sm overflow-hidden">
                 <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 border-b border-[#FFF0E6]">
                     <div class="flex items-center justify-between flex-wrap gap-3">
@@ -309,15 +363,25 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Scroll wrapper dengan fade hint --}}
                 <div class="p-3 sm:p-6">
-                    {{-- DIBUAT RELATIVE FIXED HEIGHT AGAR TIDAK GEPENG DI MOBILE --}}
-                    <div class="relative w-full h-[260px] sm:h-[350px]">
-                        <canvas id="beratChart"></canvas>
+                    <div class="relative">
+                        <div class="chart-scroll-wrapper" id="beratScrollWrapper">
+                            {{-- Canvas lebar dinamis, tinggi fixed --}}
+                            <div id="beratCanvasWrap" style="height:260px; min-width:100%;">
+                                <canvas id="beratChart" style="height:260px !important;"></canvas>
+                            </div>
+                        </div>
+                        {{-- Fade hint kanan --}}
+                        <div class="chart-scroll-hint" id="beratScrollHint"></div>
                     </div>
+                    {{-- Dots indicator --}}
+                    <div id="beratDots" class="flex justify-center gap-1.5 mt-3 sm:hidden"></div>
                 </div>
             </div>
 
-            {{-- Chart: Tinggi Badan --}}
+            {{-- ══ Chart: Tinggi Badan ══ --}}
             <div class="chart-container bg-white rounded-2xl border border-[#C2EED8] shadow-sm overflow-hidden">
                 <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 border-b border-[#EAFAF2]">
                     <div class="flex items-center justify-between flex-wrap gap-3">
@@ -339,11 +403,17 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="p-3 sm:p-6">
-                    {{-- DIBUAT RELATIVE FIXED HEIGHT AGAR TIDAK GEPENG DI MOBILE --}}
-                    <div class="relative w-full h-[260px] sm:h-[350px]">
-                        <canvas id="tinggiChart"></canvas>
+                    <div class="relative">
+                        <div class="chart-scroll-wrapper" id="tinggiScrollWrapper">
+                            <div id="tinggiCanvasWrap" style="height:260px; min-width:100%;">
+                                <canvas id="tinggiChart" style="height:260px !important;"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-scroll-hint" id="tinggiScrollHint"></div>
                     </div>
+                    <div id="tinggiDots" class="flex justify-center gap-1.5 mt-3 sm:hidden"></div>
                 </div>
             </div>
 
@@ -359,18 +429,99 @@
 <script>
     Chart.register(ChartDataLabels);
 
-    const labels     = @json($labels);
-    const beratData  = @json($beratData);
-    const tinggiData = @json($tinggiData);
-    const beratAcuan = @json($beratAcuan ?? []);
-    const tinggiAcuan= @json($tinggiAcuan ?? []);
+    const labels      = @json($labels);
+    const beratData   = @json($beratData);
+    const tinggiData  = @json($tinggiData);
+    const beratAcuan  = @json($beratAcuan ?? []);
+    const tinggiAcuan = @json($tinggiAcuan ?? []);
 
-    // Deteksi ukuran layar (Mobile)
     const isMobile = window.innerWidth < 640;
 
+    // ── Hitung lebar canvas berdasar jumlah data point ──
+    // Setiap titik diberi jarak minimal 56px di mobile, 80px di desktop
+    const MIN_POINT_WIDTH = isMobile ? 56 : 80;
+    const dataCount       = labels.length;
+    const CHART_HEIGHT    = isMobile ? 260 : 350;
+
+    function calcCanvasWidth(containerEl) {
+        const containerW = containerEl.parentElement.clientWidth;
+        const neededW    = dataCount * MIN_POINT_WIDTH + 60; // +60 untuk padding y-axis
+        return Math.max(containerW, neededW);
+    }
+
+    // ── Resize canvas wrap sesuai kebutuhan ──
+    function applyCanvasWidth(wrapId, scrollWrapperId) {
+        const wrap   = document.getElementById(wrapId);
+        const scroll = document.getElementById(scrollWrapperId);
+        const w      = calcCanvasWidth(scroll);
+        wrap.style.width  = w + 'px';
+        wrap.style.height = CHART_HEIGHT + 'px';
+    }
+
+    applyCanvasWidth('beratCanvasWrap',  'beratScrollWrapper');
+    applyCanvasWidth('tinggiCanvasWrap', 'tinggiScrollWrapper');
+
+    // ── Scroll hint (fade kanan) & scroll-to-end ──
+    function setupScrollHint(wrapperId, hintId) {
+        const wrapper = document.getElementById(wrapperId);
+        const hint    = document.getElementById(hintId);
+
+        function update() {
+            const atEnd = wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 4;
+            hint.classList.toggle('hidden', atEnd);
+        }
+
+        wrapper.addEventListener('scroll', update, { passive: true });
+        // Scroll ke paling kanan (data terbaru) saat load
+        wrapper.scrollLeft = wrapper.scrollWidth;
+        update();
+    }
+
+    // ── Dots indicator (mobile) ──
+    function setupDots(wrapperId, dotsId) {
+        const wrapper = document.getElementById(wrapperId);
+        const dotsEl  = document.getElementById(dotsId);
+        if (!isMobile || !dotsEl) return;
+
+        const totalPages = Math.ceil(dataCount / 5); // ~5 titik per "halaman"
+        if (totalPages <= 1) { dotsEl.style.display = 'none'; return; }
+
+        for (let i = 0; i < totalPages; i++) {
+            const d = document.createElement('span');
+            d.style.cssText = `
+                display:inline-block; width:6px; height:6px;
+                border-radius:99px; background:#CBD5E1;
+                transition: width 0.25s, background 0.25s;
+            `;
+            dotsEl.appendChild(d);
+        }
+
+        function updateDots() {
+            const progress = wrapper.scrollLeft / (wrapper.scrollWidth - wrapper.clientWidth);
+            const active   = Math.round(progress * (totalPages - 1));
+            dotsEl.querySelectorAll('span').forEach((d, i) => {
+                if (i === active) {
+                    d.style.background = '#0062A3';
+                    d.style.width = '18px';
+                } else {
+                    d.style.background = '#CBD5E1';
+                    d.style.width = '6px';
+                }
+            });
+        }
+
+        wrapper.addEventListener('scroll', updateDots, { passive: true });
+        // Set dot aktif ke kanan dulu (index terakhir)
+        setTimeout(() => {
+            wrapper.scrollLeft = wrapper.scrollWidth;
+            updateDots();
+        }, 50);
+    }
+
+    // ── Options Chart ──
     const commonOptions = {
-        responsive: true,
-        maintainAspectRatio: false, // <-- PENTING: Mematikan paksaan rasio agar bisa pakai class height Tailwind
+        responsive: false,          // false karena kita atur lebar manual
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             tooltip: {
@@ -379,9 +530,6 @@
                 bodyFont:  { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
                 padding: 12,
                 cornerRadius: 10,
-                callbacks: {
-                    title: (ctx) => ctx[0].label,
-                }
             },
             datalabels: {
                 font: { family: "'Plus Jakarta Sans', sans-serif", weight: '700', size: isMobile ? 9 : 11 },
@@ -394,7 +542,8 @@
                 ticks: {
                     font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600', size: isMobile ? 9 : 11 },
                     color: '#94A3B8',
-                    maxRotation: isMobile ? 45 : 0
+                    maxRotation: isMobile ? 30 : 0,
+                    maxTicksLimit: isMobile ? 999 : 999, // tampilkan semua label
                 }
             },
             y: {
@@ -405,14 +554,16 @@
                 }
             }
         },
-        layout: { padding: { top: 25, right: 10, bottom: 10, left: 0 } },
-        elements: {
-            point: { hoverRadius: 8 }
-        }
+        layout: { padding: { top: 28, right: 16, bottom: 8, left: 0 } },
+        elements: { point: { hoverRadius: 8 } }
     };
 
-    // ── BERAT CHART ──
-    new Chart(document.getElementById('beratChart'), {
+    // ── Render Berat Chart ──
+    const beratCanvas = document.getElementById('beratChart');
+    beratCanvas.width  = document.getElementById('beratCanvasWrap').clientWidth;
+    beratCanvas.height = CHART_HEIGHT;
+
+    new Chart(beratCanvas, {
         type: 'line',
         data: {
             labels,
@@ -429,7 +580,7 @@
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#FF7A00',
                     pointBorderWidth: 2.5,
-                    datalabels: { 
+                    datalabels: {
                         display: true,
                         color: '#E05D00',
                         align: 'top',
@@ -444,13 +595,13 @@
                     borderDash: [6, 5],
                     borderWidth: 2,
                     fill: false,
-                    pointRadius: isMobile ? 2 : 3, // Diaktifkan sedikit agar label WHO dapat menempel
+                    pointRadius: isMobile ? 2 : 3,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#CBD5E1',
-                    datalabels: { 
-                        display: true, // Label WHO diaktifkan
-                        color: '#94A3B8', 
-                        align: 'bottom', // Ditaruh di bawah agar tidak menabrak label anak
+                    datalabels: {
+                        display: true,
+                        color: '#94A3B8',
+                        align: 'bottom',
                         anchor: 'center',
                         offset: 4
                     }
@@ -460,8 +611,12 @@
         options: commonOptions
     });
 
-    // ── TINGGI CHART ──
-    new Chart(document.getElementById('tinggiChart'), {
+    // ── Render Tinggi Chart ──
+    const tinggiCanvas = document.getElementById('tinggiChart');
+    tinggiCanvas.width  = document.getElementById('tinggiCanvasWrap').clientWidth;
+    tinggiCanvas.height = CHART_HEIGHT;
+
+    new Chart(tinggiCanvas, {
         type: 'line',
         data: {
             labels,
@@ -478,7 +633,7 @@
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#00C951',
                     pointBorderWidth: 2.5,
-                    datalabels: { 
+                    datalabels: {
                         display: true,
                         color: '#009C3F',
                         align: 'top',
@@ -493,13 +648,13 @@
                     borderDash: [6, 5],
                     borderWidth: 2,
                     fill: false,
-                    pointRadius: isMobile ? 2 : 3, // Diaktifkan sedikit agar label WHO dapat menempel
+                    pointRadius: isMobile ? 2 : 3,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#CBD5E1',
-                    datalabels: { 
-                        display: true, // Label WHO diaktifkan
+                    datalabels: {
+                        display: true,
                         color: '#94A3B8',
-                        align: 'bottom', // Ditaruh di bawah agar tidak menabrak label anak
+                        align: 'bottom',
                         anchor: 'center',
                         offset: 4
                     }
@@ -508,6 +663,14 @@
         },
         options: commonOptions
     });
+
+    // ── Init scroll hint & dots setelah chart render ──
+    setTimeout(() => {
+        setupScrollHint('beratScrollWrapper',  'beratScrollHint');
+        setupScrollHint('tinggiScrollWrapper', 'tinggiScrollHint');
+        setupDots('beratScrollWrapper',  'beratDots');
+        setupDots('tinggiScrollWrapper', 'tinggiDots');
+    }, 100);
 </script>
 
 @endsection

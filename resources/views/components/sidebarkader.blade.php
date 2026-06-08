@@ -82,8 +82,12 @@
             <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                  style="{{ request()->routeIs('kader.rekomendasi') ? 'background: rgba(255,255,255,0.15);' : 'background: #F5F1FF;' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24"
-                     stroke="{{ request()->routeIs('kader.rekomendasi') ? 'white' : '#7C4DFF' }}" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.414 14.881A2 2 0 004 16.732V21a1 1 0 001 1h14a1 1 0 001-1v-4.268a2 2 0 00-.572-1.304zM12 4a4 4 0 110 8 4 4 0 010-8z"/>
+                    stroke="{{ request()->is('kader.rekomendasi*') ? 'white' : '#7C4DFF' }}" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 11h16a8 8 0 01-16 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 19h12"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 4c0 1.5-1.5 2-1.5 3.5"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c0 1.5-1.5 2-1.5 3.5"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 4c0 1.5-1.5 2-1.5 3.5"/>
                 </svg>
             </div>
             Buat Rekomendasi Nutrisi

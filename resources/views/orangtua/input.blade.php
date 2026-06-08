@@ -160,13 +160,13 @@
                             </label>
                             <div class="relative">
                                 <input
-                                    type="number"
+                                    type="text"
                                     readonly
-                                    value="{{ $anak->usia_bulan ?? 0 }}"
+                                    value="{{ $anak ? (int) \Carbon\Carbon::parse($anak->tanggal_lahir)->diffInMonths(now()) : 0 }}"
                                     class="w-full h-[3.4rem] rounded-2xl border pl-4 pr-14 text-[15px] font-semibold cursor-not-allowed outline-none"
                                     style="border-color:#DDE5F0; background:#F0F4F9; color:#64748b;">
                                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black tracking-widest"
-                                      style="color:#94a3b8;">BLN</span>
+                                      style="color:#94a3b8;">BULAN</span>
                             </div>
                         </div>
 
@@ -232,22 +232,94 @@
      MODAL HASIL
 ════════════════════════════════════════════════════════════════ --}}
 @if(session('success'))
-<div id="resultModal"
-     class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
-     style="background:rgba(0,20,50,0.65); backdrop-filter:blur(6px);">
 
-    {{-- Sheet: Dipersempit menggunakan max-w-sm atau max-w-md --}}
-    <div class="relative w-full sm:max-w-sm md:max-w-md bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
-         style="max-height:90vh;">
+{{-- ── Modal styles ── --}}
+<style>
+    /* Deteksi tinggi navbar secara CSS — sesuaikan nilai --navbar-h jika berbeda */
+    :root { --navbar-h: 64px; }
 
-        {{-- Desktop Background Ornaments (Decorations) --}}
-        <div class="absolute -top-24 -right-24 w-56 h-56 rounded-full pointer-events-none hidden sm:block" 
-             style="background:radial-gradient(circle, rgba(253,75,199,0.06) 0%, transparent 70%);"></div>
-        <div class="absolute -bottom-24 -left-24 w-56 h-56 rounded-full pointer-events-none hidden sm:block" 
-             style="background:radial-gradient(circle, rgba(0,120,193,0.06) 0%, transparent 70%);"></div>
+    #resultModal {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: flex-end;       /* mobile: muncul dari bawah */
+        justify-content: center;
+        /* Overlay gelap */
+        background: rgba(0, 20, 50, 0.60);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        /* Pastikan tidak tertimpa/tertutup navbar */
+        padding-top: var(--navbar-h);
+    }
 
-        {{-- Top accent bar --}}
-        <div class="h-[4px] w-full flex-shrink-0" style="background: linear-gradient(90deg, #003E7A 0%, #0078C1 45%, #FD4BC7 100%);"></div>
+    @media (min-width: 640px) {
+        #resultModal {
+            align-items: center;     /* desktop: tengah vertikal */
+            padding-top: var(--navbar-h);
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+
+    /* Sheet card */
+    #resultModal .modal-card {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        background: #fff;
+        border-radius: 2rem 2rem 0 0;
+        box-shadow: 0 -8px 48px rgba(0,20,50,0.18);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        /* Maksimal tinggi = viewport dikurangi navbar + sedikit padding */
+        max-height: calc(100vh - var(--navbar-h) - 8px);
+    }
+
+    @media (min-width: 640px) {
+        #resultModal .modal-card {
+            border-radius: 2rem;
+            box-shadow: 0 24px 80px rgba(0,20,50,0.22);
+            max-height: calc(100vh - var(--navbar-h) - 2rem);
+        }
+    }
+
+    /* Animasi masuk */
+    #resultModal .modal-card {
+        animation: modalSlideUp .32s cubic-bezier(.32,.72,0,1) both;
+    }
+    @media (min-width: 640px) {
+        #resultModal .modal-card {
+            animation: modalFadeScale .22s cubic-bezier(.32,.72,0,1) both;
+        }
+    }
+
+    @keyframes modalSlideUp {
+        from { transform: translateY(100%); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes modalFadeScale {
+        from { transform: scale(.96) translateY(8px); opacity: 0; }
+        to   { transform: scale(1)   translateY(0);   opacity: 1; }
+    }
+
+    /* Scroll body konten modal */
+    #resultModal .modal-body {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+</style>
+
+<div id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="modal-card">
+
+        {{-- Accent bar --}}
+        <div class="h-[4px] w-full flex-shrink-0"
+             style="background: linear-gradient(90deg, #003E7A 0%, #0078C1 45%, #FD4BC7 100%);"></div>
 
         {{-- Drag handle (mobile) --}}
         <div class="flex justify-center pt-3 pb-1 sm:hidden flex-shrink-0">
@@ -256,108 +328,112 @@
 
         {{-- Close button --}}
         <button onclick="closeModal()"
-                class="absolute top-4 right-4 md:top-5 md:right-5 w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-colors duration-150 z-20"
+                aria-label="Tutup"
+                class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-150"
                 style="background:#F0F4F9; color:#64748b;"
                 onmouseenter="this.style.background='#DDE5F0';"
                 onmouseleave="this.style.background='#F0F4F9';">
-            <svg class="w-4 h-4 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
 
-        {{-- Scrollable content: Padding dikurangi menjadi p-6 / p-8 --}}
-        <div class="relative z-10 overflow-y-auto px-6 py-8 sm:px-8 sm:py-8 text-center flex-1">
+        {{-- Scrollable body --}}
+        <div class="modal-body px-6 py-6 sm:px-8 sm:py-8 text-center flex-1">
 
-            {{-- Status icon: Diperkecil --}}
-            <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-[1rem] flex items-center justify-center shadow-lg mb-5"
+            {{-- Status icon --}}
+            <div class="w-14 h-14 mx-auto rounded-[1rem] flex items-center justify-center shadow-lg mb-5"
                  style="background:linear-gradient(135deg,#003E7A 0%,#0060BB 100%);">
-                <svg class="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
 
             {{-- Label --}}
-            <p class="text-[10px] md:text-[11px] font-bold tracking-[0.14em] uppercase mb-1"
-               style="color:#94a3b8; font-family:'DM Sans',sans-serif;">
+            <p class="text-[10px] font-bold tracking-[0.14em] uppercase mb-1"
+               style="color:#94a3b8; font-family:'DM Sans',sans-serif;" id="modalTitle">
                 Hasil Perhitungan
             </p>
 
-            {{-- Z-Score display: Ukuran text dikecilkan (text-5xl / 6xl) --}}
+            {{-- Z-Score --}}
             <div class="flex items-baseline justify-center gap-2 mt-1 mb-2">
-                <span class="font-black leading-none tracking-tight text-5xl sm:text-6xl"
-                      style="color:#003E7A; font-family:'Sora',sans-serif;">
+                <span class="font-black leading-none tracking-tight"
+                      style="font-size: clamp(2.8rem, 10vw, 4rem); color:#003E7A; font-family:'Sora',sans-serif;">
                     {{ session('zscore') }}
                 </span>
-                <span class="text-xl md:text-2xl font-bold" style="color:#94a3b8; font-family:'Sora',sans-serif;">SD</span>
+                <span class="text-xl font-bold" style="color:#94a3b8; font-family:'Sora',sans-serif;">SD</span>
             </div>
 
             {{-- Divider --}}
             <div class="h-px my-5 max-w-[160px] mx-auto" style="background:#EEF2F8;"></div>
 
             {{-- Status Gizi label --}}
-            <p class="text-[10px] md:text-[11px] font-bold tracking-[0.14em] uppercase mb-3"
+            <p class="text-[10px] font-bold tracking-[0.14em] uppercase mb-3"
                style="color:#94a3b8; font-family:'DM Sans',sans-serif;">
                 Status Gizi
             </p>
 
             {{-- Status badge --}}
-            <span class="inline-flex items-center gap-2 px-5 py-2 md:px-6 md:py-2.5 rounded-full text-sm md:text-base font-bold"
+            <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold"
                   style="background:rgba(253,75,199,0.08); border:1.5px solid rgba(253,75,199,0.25); color:#c2005c; font-family:'Sora',sans-serif;">
-                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full flex-shrink-0" style="background:#FD4BC7;"></span>
+                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#FD4BC7;"></span>
                 {{ session('status') }}
             </span>
 
             {{-- Note --}}
-            <p class="mt-5 text-xs md:text-sm leading-relaxed max-w-[280px] mx-auto" style="color:#64748b;">
+            <p class="mt-5 text-xs leading-relaxed max-w-[280px] mx-auto" style="color:#64748b;">
                 SD (Standar Deviasi) adalah satuan WHO untuk mengukur penyimpangan tinggi badan anak dari rata-rata normal.
             </p>
 
             {{-- Close button --}}
             <button onclick="closeModal()"
-                    class="mt-6 md:mt-7 w-full sm:w-auto sm:min-w-[200px] sm:mx-auto h-[3rem] px-8 rounded-xl md:rounded-2xl text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.98]"
+                    class="mt-6 w-full h-[3rem] rounded-2xl text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.98]"
                     style="background:linear-gradient(135deg,#003E7A 0%,#0060BB 100%); font-family:'Sora',sans-serif;">
                 Tutup
             </button>
 
-            {{-- Bottom safe-area spacer (iOS) --}}
-            <div class="h-2 sm:h-0"></div>
+            {{-- Safe-area spacer iOS --}}
+            <div class="h-safe-bottom" style="height: env(safe-area-inset-bottom, 8px);"></div>
 
         </div>
     </div>
 </div>
-
-{{-- Modal entrance animation --}}
-<style>
-    #resultModal > div {
-        animation: slideUp .3s cubic-bezier(.32,.72,0,1) both;
-    }
-    @media (min-width: 640px) {
-        #resultModal > div {
-            animation: fadeScale .2s cubic-bezier(.32,.72,0,1) both;
-        }
-    }
-    @keyframes slideUp {
-        from { transform: translateY(100%); opacity: 0; }
-        to   { transform: translateY(0);    opacity: 1; }
-    }
-    @keyframes fadeScale {
-        from { transform: scale(.95); opacity: 0; }
-        to   { transform: scale(1);   opacity: 1; }
-    }
-</style>
 @endif
 
 {{-- ════════════════════════════════════════════════════════════════
      SCRIPTS
 ════════════════════════════════════════════════════════════════ --}}
 <script>
+    /* ── Deteksi tinggi navbar aktual & set CSS variable ── */
+    (function () {
+        function setNavbarHeight() {
+            // Coba selector umum; sesuaikan jika tag navbar berbeda di project Anda
+            const navbar =
+                document.querySelector('nav') ||
+                document.querySelector('header') ||
+                document.querySelector('[data-navbar]') ||
+                document.querySelector('.navbar');
+
+            const h = navbar ? navbar.getBoundingClientRect().height : 64;
+            document.documentElement.style.setProperty('--navbar-h', h + 'px');
+        }
+        setNavbarHeight();
+        window.addEventListener('resize', setNavbarHeight);
+    })();
+
     /* ── Close modal ── */
     function closeModal() {
         const modal = document.getElementById('resultModal');
         if (!modal) return;
-        modal.style.opacity = '0';
-        modal.style.transition = 'opacity .2s';
-        setTimeout(() => modal.style.display = 'none', 200);
+        const card = modal.querySelector('.modal-card');
+        if (card) {
+            card.style.transition = 'transform .22s cubic-bezier(.32,.72,0,1), opacity .22s';
+            card.style.transform  = window.innerWidth < 640 ? 'translateY(100%)' : 'scale(.95) translateY(8px)';
+            card.style.opacity    = '0';
+        }
+        modal.style.transition = 'opacity .25s';
+        modal.style.opacity    = '0';
+        setTimeout(() => modal.style.display = 'none', 260);
     }
 
     /* ── Dismiss modal on backdrop click ── */
@@ -368,32 +444,27 @@
                 if (e.target === modal) closeModal();
             });
         }
-    });
 
-    /* ── Prevent scroll-wheel changing number inputs ── */
-    document.addEventListener('DOMContentLoaded', function () {
+        /* ── Prevent scroll-wheel changing number inputs ── */
         document.querySelectorAll('.non-scroll-number').forEach(function (input) {
-            input.addEventListener('wheel', function (e) {
-                e.preventDefault();
-            }, { passive: false });
+            input.addEventListener('wheel', function (e) { e.preventDefault(); }, { passive: false });
         });
-    });
 
-    /* ── Submit loading state ── */
-    document.addEventListener('DOMContentLoaded', function () {
+        /* ── Submit loading state ── */
         const form = document.querySelector('form');
         const btn  = document.getElementById('submitBtn');
-        if (!form || !btn) return;
-        form.addEventListener('submit', function () {
-            const txt     = document.getElementById('submitText');
-            const arrow   = document.getElementById('submitArrow');
-            const spinner = document.getElementById('submitSpinner');
-            if (txt)     txt.textContent = 'Memproses…';
-            if (arrow)   arrow.classList.add('hidden');
-            if (spinner) spinner.classList.remove('hidden');
-            btn.disabled = true;
-            btn.style.opacity = '.75';
-        });
+        if (form && btn) {
+            form.addEventListener('submit', function () {
+                const txt     = document.getElementById('submitText');
+                const arrow   = document.getElementById('submitArrow');
+                const spinner = document.getElementById('submitSpinner');
+                if (txt)     txt.textContent = 'Memproses…';
+                if (arrow)   arrow.classList.add('hidden');
+                if (spinner) spinner.classList.remove('hidden');
+                btn.disabled      = true;
+                btn.style.opacity = '.75';
+            });
+        }
     });
 </script>
 

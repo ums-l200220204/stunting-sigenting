@@ -38,7 +38,7 @@
                 Platform Pemantauan Pertumbuhan Anak
             </div>
 
-            {{-- Headline (Ukuran font dikecilkan untuk mobile: text-3xl) --}}
+            {{-- Headline --}}
             <h1 class="font-extrabold text-white leading-[1.1] tracking-tight mb-4 md:mb-6
                        text-3xl sm:text-4xl md:text-5xl xl:text-[3.5rem]"
                 style="font-family:'Sora',sans-serif;">
@@ -56,19 +56,40 @@
         </div>
 
         {{-- ── STATS CARD ── --}}
-        {{-- Padding diturunkan menjadi p-5 untuk mobile --}}
         <div class="relative z-10 rounded-3xl p-5 sm:p-6 md:p-7 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0"
              style="background:rgba(255,255,255,0.09);
                     border:1px solid rgba(255,255,255,0.14);
                     backdrop-filter:blur(24px);
                     -webkit-backdrop-filter:blur(24px);">
 
-            {{-- Header --}}
-            <div class="flex items-start justify-between mb-5 md:mb-6 gap-2">
+            {{-- ==============================================
+                 IDENTITAS ANAK (BARU DITAMBAHKAN)
+            =============================================== --}}
+            <div class="flex items-center gap-3.5 mb-4 md:mb-5">
+                <div class="flex-1 min-w-0">
+                    <p class="text-[9px] md:text-[10px] font-semibold tracking-[0.1em] uppercase mb-1"
+                       style="color:rgba(255,255,255,0.45);">
+                        Nama Anak
+                    </p>
+                    <p class="font-bold text-white text-sm md:text-base leading-tight truncate"
+                       style="font-family:'Sora',sans-serif;">
+                        {{-- Ganti $anak->nama_anak dengan variabel yang sesuai di Controller Anda --}}
+                        {{ optional($anak)->nama_anak ?? 'Data Anak Belum Diinput' }}
+                    </p>
+                </div>
+            </div>
+
+            {{-- Divider Pemisah Identitas --}}
+            <div class="h-px w-full mb-4 md:mb-5" style="background:rgba(255,255,255,0.1);"></div>
+            {{-- ============================================== --}}
+
+
+            {{-- Header Status Gizi --}}
+            <div class="flex items-start justify-between mb-4 md:mb-5 gap-2">
                 <div>
                     <p class="text-[10px] md:text-[11px] font-semibold tracking-[0.1em] uppercase mb-1"
                        style="color:rgba(255,255,255,0.45);">
-                        Status Pertumbuhan Terakhir
+                        Status Pertumbuhan
                     </p>
                     <p class="font-bold text-white text-lg md:text-xl leading-tight"
                        style="font-family:'Sora',sans-serif;">
@@ -84,10 +105,7 @@
                 </div>
             </div>
 
-            {{-- Divider --}}
-            <div class="h-px mb-4 md:mb-5" style="background:rgba(255,255,255,0.1);"></div>
-
-            {{-- Stat grid (Tetap 2 kolom tapi dengan padding lebih efisien di mobile) --}}
+            {{-- Stat grid (Tetap 2 kolom) --}}
             <div class="grid grid-cols-2 gap-2 md:gap-2.5">
 
                 <div class="rounded-2xl px-3 py-3 md:px-4 md:py-3.5"
@@ -158,139 +176,88 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
 
-            {{-- ── CARD 1 — Input Data ── --}}
-            {{-- Padding p-6 untuk mobile, p-8 untuk layar besar --}}
-            <div class="group relative overflow-hidden bg-white rounded-3xl p-6 md:p-8
-                        border border-slate-200
-                        transition-all duration-300
-                        hover:-translate-y-1.5"
+            {{-- ── CARD 1 — Input Data (Pena/Form) ── --}}
+            <div class="group relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 border border-slate-200 transition-all duration-300 hover:-translate-y-1.5"
                  style="transition: transform .3s ease, box-shadow .3s ease;"
                  onmouseenter="this.style.boxShadow='0 16px 48px -12px rgba(0,91,169,0.18)'"
                  onmouseleave="this.style.boxShadow='none'">
 
-                <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full pointer-events-none"
-                     style="background:#005BA9; opacity:.05;"></div>
+                <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full pointer-events-none" style="background:#005BA9; opacity:.05;"></div>
 
                 <div class="relative z-10">
-
                     <div class="w-12 h-12 md:w-[52px] md:h-[52px] mb-5 md:mb-6 flex items-center justify-center rounded-2xl"
                          style="background:#EBF3FF; color:#005BA9;">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M9 17v-2m3 2v-4m3 4V7m3 10V5M5 19h14"/>
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </div>
 
-                    <span class="inline-block mb-3 text-[10px] md:text-[11px] font-semibold tracking-[0.07em]
-                                 uppercase px-2.5 py-1 rounded-full"
-                          style="background:#EBF3FF; color:#0046A3;">
-                        Data &amp; Rekam
-                    </span>
+                    <span class="inline-block mb-3 text-[10px] md:text-[11px] font-semibold tracking-[0.07em] uppercase px-2.5 py-1 rounded-full"
+                          style="background:#EBF3FF; color:#0046A3;">Data &amp; Rekam</span>
 
-                    <h3 class="font-bold text-slate-900 text-lg md:text-xl tracking-tight mb-2 md:mb-2.5"
-                        style="font-family:'Sora',sans-serif;">
-                        Input Data Perkembangan
-                    </h3>
+                    <h3 class="font-bold text-slate-900 text-lg md:text-xl tracking-tight mb-2 md:mb-2.5" style="font-family:'Sora',sans-serif;">Input Data Perkembangan</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 md:mb-7">Tambahkan data tinggi badan, berat badan, dan perkembangan anak secara berkala.</p>
 
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6 md:mb-7">
-                        Tambahkan data tinggi badan, berat badan, dan perkembangan anak
-                        secara berkala untuk pemantauan yang optimal.
-                    </p>
-
-                    <a href="{{ route('orangtua.input') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full
-                              text-white text-xs md:text-sm font-semibold
-                              transition-all duration-200 hover:gap-3 w-fit"
-                       style="background:#005BA9;">
-                        Mulai Input
-                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
+                    <a href="{{ route('orangtua.input') }}" class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-white text-xs md:text-sm font-semibold transition-all duration-200 hover:gap-3 w-fit" style="background:#005BA9;">
+                        Mulai Input <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
-
                 </div>
             </div>
 
-            {{-- ── CARD 2 — Cek Perkembangan ── --}}
-            <div class="group relative overflow-hidden bg-white rounded-3xl p-6 md:p-8
-                        border border-slate-200
-                        transition-all duration-300
-                        hover:-translate-y-1.5"
+            {{-- ── CARD 2 — Cek Perkembangan (Grafik Anak) ── --}}
+            <div class="group relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 border border-slate-200 transition-all duration-300 hover:-translate-y-1.5"
                  onmouseenter="this.style.boxShadow='0 16px 48px -12px rgba(253,75,199,0.2)'"
                  onmouseleave="this.style.boxShadow='none'">
 
-                <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full pointer-events-none"
-                     style="background:#FD4BC7; opacity:.05;"></div>
+                <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full pointer-events-none" style="background:#FD4BC7; opacity:.05;"></div>
 
                 <div class="relative z-10">
-
                     <div class="w-12 h-12 md:w-[52px] md:h-[52px] mb-5 md:mb-6 flex items-center justify-center rounded-2xl"
                          style="background:#FDE8F8; color:#C4219B;">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
                         </svg>
                     </div>
 
-                    <span class="inline-block mb-3 text-[10px] md:text-[11px] font-semibold tracking-[0.07em]
-                                 uppercase px-2.5 py-1 rounded-full"
-                          style="background:#FDE8F8; color:#A0198A;">
-                        Analisis &amp; Pantau
-                    </span>
+                    <span class="inline-block mb-3 text-[10px] md:text-[11px] font-semibold tracking-[0.07em] uppercase px-2.5 py-1 rounded-full"
+                          style="background:#FDE8F8; color:#A0198A;">Analisis &amp; Pantau</span>
 
-                    <h3 class="font-bold text-slate-900 text-lg md:text-xl tracking-tight mb-2 md:mb-2.5"
-                        style="font-family:'Sora',sans-serif;">
-                        Cek Perkembangan Anak
-                    </h3>
+                    <h3 class="font-bold text-slate-900 text-lg md:text-xl tracking-tight mb-2 md:mb-2.5" style="font-family:'Sora',sans-serif;">Cek Perkembangan Anak</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 md:mb-7">Lihat hasil analisis perkembangan dan pemantauan kondisi anak secara visual.</p>
 
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6 md:mb-7">
-                        Lihat hasil analisis perkembangan dan pemantauan kondisi anak
-                        berdasarkan data terbaru yang telah diinput.
-                    </p>
-
-                    <a href="{{ route('orangtua.perkembangan') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full
-                              text-white text-xs md:text-sm font-semibold
-                              transition-all duration-200 hover:gap-3 w-fit"
-                       style="background:#FD4BC7;">
-                        Lihat Hasil
-                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
+                    <a href="{{ route('orangtua.perkembangan') }}" class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-white text-xs md:text-sm font-semibold transition-all duration-200 hover:gap-3 w-fit" style="background:#FD4BC7;">
+                        Lihat Hasil <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
-
                 </div>
             </div>
 
-            {{-- ── CARD 3 — Rekomendasi Nutrisi ── --}}
+            {{-- ── CARD 3 — Rekomendasi Nutrisi (Ikon Mangkuk Makanan) ── --}}
             <div class="group relative overflow-hidden bg-white rounded-3xl p-6 md:p-8
                         border border-slate-200
                         transition-all duration-300
                         hover:-translate-y-1.5"
-                 onmouseenter="this.style.boxShadow='0 16px 48px -12px rgba(0,120,193,0.18)'"
-                 onmouseleave="this.style.boxShadow='none'">
+                onmouseenter="this.style.boxShadow='0 16px 48px -12px rgba(0,120,193,0.18)'"
+                onmouseleave="this.style.boxShadow='none'">
 
                 <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full pointer-events-none"
-                     style="background:#0078C1; opacity:.05;"></div>
+                    style="background:#0078C1; opacity:.05;"></div>
 
                 <div class="relative z-10">
 
                     <div class="w-12 h-12 md:w-[52px] md:h-[52px] mb-5 md:mb-6 flex items-center justify-center rounded-2xl"
-                         style="background:#E6F4FF; color:#0078C1;">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                        </svg>
+                        style="background:#E6F4FF; color:#0078C1;">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 11h16a8 8 0 01-16 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 19h12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 4c0 1.5-1.5 2-1.5 3.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c0 1.5-1.5 2-1.5 3.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 4c0 1.5-1.5 2-1.5 3.5"/>
+                            </svg>
                     </div>
 
                     <span class="inline-block mb-3 text-[10px] md:text-[11px] font-semibold tracking-[0.07em]
-                                 uppercase px-2.5 py-1 rounded-full"
-                          style="background:#E6F4FF; color:#005A96;">
+                                uppercase px-2.5 py-1 rounded-full"
+                        style="background:#E6F4FF; color:#005A96;">
                         Nutrisi &amp; Gizi
                     </span>
 
@@ -300,27 +267,24 @@
                     </h3>
 
                     <p class="text-slate-500 text-sm leading-relaxed mb-6 md:mb-7">
-                        Dapatkan rekomendasi makanan dan nutrisi yang disesuaikan
-                        dengan kebutuhan tumbuh kembang anak Anda.
+                        Dapatkan rekomendasi menu harian yang kaya gizi untuk mendukung tumbuh kembang optimal si kecil.
                     </p>
 
                     <a href="{{ route('orangtua.rekomendasi') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full
-                              text-white text-xs md:text-sm font-semibold
-                              transition-all duration-200 hover:gap-3 w-fit"
-                       style="background:#0078C1;">
+                    class="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full
+                            text-white text-xs md:text-sm font-semibold
+                            transition-all duration-200 hover:gap-3 w-fit"
+                    style="background:#0078C1;">
                         Lihat Rekomendasi
                         <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
                     </a>
 
                 </div>
             </div>
-
         </div>
-
     </section>
 
 </div>

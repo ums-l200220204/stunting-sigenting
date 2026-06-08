@@ -63,7 +63,8 @@
                            px-4 py-2.5 text-sm text-slate-700
                            focus:outline-none">
                 <option value="">Semua Tahun</option>
-                @for($i = date('Y'); $i >= 2020; $i--)
+                <option value="{{ date('Y') }}" {{ request('tahun') == date('Y') ? 'selected' : '' }}>{{ date('Y') }}</option>
+                @for($i = date('Y') - 1; $i >= 2020; $i--)
                     <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
                         {{ $i }}
                     </option>
@@ -166,12 +167,12 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
 
         {{-- Status Gizi --}}
-        <div class="bg-white rounded-3xl border border-slate-200 p-7"
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7"
              style="box-shadow:0 4px 24px -6px rgba(0,91,169,0.06);">
 
-            <div class="flex items-start justify-between mb-6">
+            <div class="flex items-start justify-between mb-4 sm:mb-6 gap-3">
                 <div>
-                    <h2 class="font-bold text-slate-900 text-lg tracking-tight"
+                    <h2 class="font-bold text-slate-900 text-base sm:text-lg tracking-tight"
                         style="font-family:'Sora',sans-serif;">
                         Status Gizi Anak
                     </h2>
@@ -179,8 +180,8 @@
                         Berdasarkan data pemeriksaan terbaru.
                     </p>
                 </div>
-                {{-- Legend pills --}}
-                <div class="hidden md:flex flex-wrap gap-1.5 justify-end max-w-[220px]">
+                {{-- Legend pills — hidden on xs, shown sm+ --}}
+                <div class="hidden sm:flex flex-wrap gap-1.5 justify-end max-w-[220px]">
                     @foreach([
                         ['Belum Dicek','#94A3B8'],
                         ['Stunting Berat','#FF4D4F'],
@@ -197,16 +198,36 @@
                 </div>
             </div>
 
-            <canvas id="statusChart" height="80"></canvas>
+            {{-- Legend pills mobile (xs only, horizontal scroll) --}}
+            <div class="flex sm:hidden gap-1.5 overflow-x-auto pb-2 mb-3 no-scrollbar">
+                @foreach([
+                    ['Belum Dicek','#94A3B8'],
+                    ['Stunting Berat','#FF4D4F'],
+                    ['Stunting','#FFB200'],
+                    ['Normal','#00C951'],
+                    ['Tinggi','#8B5CF6'],
+                ] as [$label, $color])
+                <span class="inline-flex flex-shrink-0 items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                      style="background:{{ $color }}18; color:{{ $color }};">
+                    <span class="w-1.5 h-1.5 rounded-full inline-block" style="background:{{ $color }};"></span>
+                    {{ $label }}
+                </span>
+                @endforeach
+            </div>
+
+            {{-- Responsive canvas wrapper (Pure Tailwind) --}}
+            <div class="relative w-full h-[220px] sm:h-[280px] lg:h-[320px]">
+                <canvas id="statusChart"></canvas>
+            </div>
 
         </div>
 
         {{-- Gender --}}
-        <div class="bg-white rounded-3xl border border-slate-200 p-7"
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7"
              style="box-shadow:0 4px 24px -6px rgba(0,91,169,0.06);">
 
-            <div class="mb-6">
-                <h2 class="font-bold text-slate-900 text-lg tracking-tight"
+            <div class="mb-4 sm:mb-6">
+                <h2 class="font-bold text-slate-900 text-base sm:text-lg tracking-tight"
                     style="font-family:'Sora',sans-serif;">
                     Distribusi Jenis Kelamin
                 </h2>
@@ -216,8 +237,9 @@
             </div>
 
             {{-- Donut + legend side by side --}}
-            <div class="flex items-center gap-8">
-                <div class="flex-shrink-0" style="width:180px;">
+            <div class="flex items-center gap-6 sm:gap-8">
+                {{-- Pure Tailwind wrapper --}}
+                <div class="shrink-0 w-[140px] min-[480px]:w-[180px]">
                     <canvas id="genderChart"></canvas>
                 </div>
                 <div class="flex flex-col gap-4">
@@ -253,12 +275,12 @@
     {{-- ══════════════════════════════════════
          GRAFIK ROW 2 — Kelompok Usia
     ══════════════════════════════════════ --}}
-    <div class="bg-white rounded-3xl border border-slate-200 p-7"
+    <div class="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7"
          style="box-shadow:0 4px 24px -6px rgba(0,91,169,0.06);">
 
-        <div class="flex items-start justify-between mb-6">
+        <div class="flex items-start justify-between mb-4 sm:mb-6 gap-3">
             <div>
-                <h2 class="font-bold text-slate-900 text-lg tracking-tight"
+                <h2 class="font-bold text-slate-900 text-base sm:text-lg tracking-tight"
                     style="font-family:'Sora',sans-serif;">
                     Kelompok Usia Anak
                 </h2>
@@ -266,14 +288,18 @@
                     Distribusi usia anak berdasarkan data pertumbuhan terbaru (bulan).
                 </p>
             </div>
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full"
+            <span class="inline-flex flex-shrink-0 items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full"
                   style="background:#EBF3FF; color:#005BA9;">
                 <span class="w-2 h-2 rounded-full inline-block" style="background:#005BA9;"></span>
-                Jumlah Anak
+                <span class="hidden sm:inline">Jumlah Anak</span>
+                <span class="sm:hidden">Anak</span>
             </span>
         </div>
 
-        <canvas id="usiaChart" height="90"></canvas>
+        {{-- Responsive canvas wrapper (Pure Tailwind) --}}
+        <div class="relative w-full h-[260px] sm:h-[300px] lg:h-[340px] pt-6">
+            <canvas id="usiaChart"></canvas>
+        </div>
 
     </div>
 
@@ -285,6 +311,11 @@
 
 <script>
 Chart.register(ChartDataLabels);
+
+// ── Helper: detect mobile ─────────────────────────────
+function isMobile() {
+    return window.innerWidth < 640;
+}
 
 // ── Shared datalabels config ──────────────────────────
 const dlBase = {
@@ -307,16 +338,44 @@ let statusChartInstance = new Chart(document.getElementById('statusChart'), {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,          // ← kunci responsif
         plugins: {
             legend: { display: false },
-            datalabels: { ...dlBase, anchor: 'center', align: 'center' }
+            datalabels: {
+                ...dlBase,
+                anchor: 'center',
+                align: 'center',
+                font: {
+                    weight: 'bold',
+                    size: isMobile() ? 10 : 13
+                }
+            }
         },
         layout: { padding: { top: 16 } },
         scales: {
-            x: { grid: { display: false }, border: { display: false } },
+            x: {
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                    color: '#94A3B8',
+                    font: { size: isMobile() ? 9 : 11 },
+                    maxRotation: isMobile() ? 35 : 0,
+                    minRotation: isMobile() ? 35 : 0,
+                    callback: function(val, idx) {
+                        const labels = ['Belum\nDicek', 'Stunt.\nBerat', 'Stunting', 'Normal', 'Tinggi'];
+                        const labelsMobile = ['B.Dicek', 'S.Berat', 'Stunting', 'Normal', 'Tinggi'];
+                        return isMobile() ? labelsMobile[idx] : this.getLabelForValue(val);
+                    }
+                }
+            },
             y: {
                 beginAtZero: true,
-                ticks: { stepSize: 1, precision: 0, color: '#94A3B8', font: { size: 11 } },
+                ticks: {
+                    stepSize: 1,
+                    precision: 0,
+                    color: '#94A3B8',
+                    font: { size: isMobile() ? 9 : 11 }
+                },
                 grid: { color: '#F1F5F9' },
                 border: { display: false }
             }
@@ -351,49 +410,97 @@ let genderChartInstance = new Chart(document.getElementById('genderChart'), {
     }
 });
 
-    // =========================
-    // USIA DETAIL
-    // =========================
-    let usiaChartInstance = new Chart(
-        document.getElementById('usiaChart'),
-        {
-            type: 'line',
-            data: {
-                labels: ['0-6', '7-12', '13-18', '19-24', '25-36', '37-48', '49-60'],
-                datasets: [{
-                    label: 'Jumlah Anak',
-                    data: [
-                        {{ $usia0_6 ?? 0 }}, {{ $usia7_12 ?? 0 }}, {{ $usia13_18 ?? 0 }},
-                        {{ $usia19_24 ?? 0 }}, {{ $usia25_36 ?? 0 }}, {{ $usia37_48 ?? 0 }},
-                        {{ $usia49_60 ?? 0 }}
-                    ],
-                    borderColor: '#005BA9',
-                    backgroundColor: 'rgba(0,91,169,0.08)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 4,
-                    pointRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    datalabels: {
-                        color: '#005BA9', // Warna biru menyesuaikan garis
-                        font: { weight: 'bold', size: 12 },
-                        anchor: 'end', // Posisikan di atas titik kordinat
-                        align: 'top',
-                        offset: 4,
-                        formatter: function(value) {
-                            return value > 0 ? value : '';
-                        }
-                    }
+// ── KELOMPOK USIA ─────────────────────────────────────
+let usiaChartInstance = new Chart(document.getElementById('usiaChart'), {
+    type: 'line',
+    data: {
+        labels: ['0-6', '7-12', '13-18', '19-24', '25-36', '37-48', '49-60'],
+        datasets: [{
+            label: 'Jumlah Anak',
+            data: [
+                {{ $usia0_6 ?? 0 }}, {{ $usia7_12 ?? 0 }}, {{ $usia13_18 ?? 0 }},
+                {{ $usia19_24 ?? 0 }}, {{ $usia25_36 ?? 0 }}, {{ $usia37_48 ?? 0 }},
+                {{ $usia49_60 ?? 0 }}
+            ],
+            borderColor: '#005BA9',
+            backgroundColor: 'rgba(0,91,169,0.08)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: isMobile() ? 2.5 : 4,
+            pointRadius: isMobile() ? 4 : 5,
+            pointHoverRadius: isMobile() ? 6 : 7,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,          // ← kunci responsif
+        plugins: {
+            legend: { display: false },
+            datalabels: {
+                color: '#005BA9',
+                font: {
+                    weight: 'bold',
+                    size: isMobile() ? 10 : 12
                 },
-                layout: { padding: { top: 20 } },
-                scales: { y: { beginAtZero: true } }
+                anchor: 'end',
+                align: 'top',
+                offset: isMobile() ? 2 : 4,
+                formatter: v => v > 0 ? v : ''
+            }
+        },
+        layout: {
+            padding: { top: isMobile() ? 40 : 32, right: 8, left: 4 }
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                    color: '#94A3B8',
+                    font: { size: isMobile() ? 9 : 11 },
+                    maxRotation: 0,
+                    minRotation: 0
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    precision: 0,
+                    color: '#94A3B8',
+                    font: { size: isMobile() ? 9 : 11 }
+                },
+                grid: { color: '#F1F5F9' },
+                border: { display: false }
             }
         }
-    );
+    }
+});
+
+// ── Redraw on resize (update responsive options) ──────
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        const mobile = isMobile();
+
+        statusChartInstance.options.plugins.datalabels.font.size = mobile ? 10 : 13;
+        statusChartInstance.options.scales.x.ticks.font.size     = mobile ? 9  : 11;
+        statusChartInstance.options.scales.x.ticks.maxRotation   = mobile ? 35 : 0;
+        statusChartInstance.options.scales.x.ticks.minRotation   = mobile ? 35 : 0;
+        statusChartInstance.options.scales.y.ticks.font.size     = mobile ? 9  : 11;
+        statusChartInstance.update();
+
+        usiaChartInstance.options.plugins.datalabels.font.size   = mobile ? 10 : 12;
+        usiaChartInstance.options.plugins.datalabels.offset       = mobile ? 2  : 4;
+        usiaChartInstance.options.layout.padding.top              = mobile ? 40 : 32;
+        usiaChartInstance.options.scales.x.ticks.font.size       = mobile ? 9  : 11;
+        usiaChartInstance.options.scales.y.ticks.font.size       = mobile ? 9  : 11;
+        usiaChartInstance.data.datasets[0].borderWidth            = mobile ? 2.5 : 4;
+        usiaChartInstance.data.datasets[0].pointRadius            = mobile ? 4  : 5;
+        usiaChartInstance.update();
+    }, 200);
+});
 
 // ── FILTER AJAX ───────────────────────────────────────
 const filterBulan  = document.getElementById('filter-bulan');

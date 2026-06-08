@@ -84,7 +84,7 @@
                  style="{{ request()->is('orangtua/input') ? 'background: rgba(255,255,255,0.15);' : 'background: #FFF0FA;' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24"
                      stroke="{{ request()->is('orangtua/input') ? 'white' : '#FD4BC7' }}" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
             </div>
             Input Perkembangan
@@ -99,7 +99,7 @@
                  style="{{ request()->is('orangtua/perkembangan') ? 'background: rgba(255,255,255,0.15);' : 'background: #F0FFFA;' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24"
                      stroke="{{ request()->is('orangtua/perkembangan') ? 'white' : '#00B894' }}" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
                 </svg>
             </div>
             Cek Perkembangan
@@ -113,8 +113,12 @@
             <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                  style="{{ request()->is('orangtua/rekomendasi*') ? 'background: rgba(255,255,255,0.15);' : 'background: #F5F1FF;' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24"
-                     stroke="{{ request()->is('orangtua/rekomendasi*') ? 'white' : '#7C4DFF' }}" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.414 14.881A2 2 0 004 16.732V21a1 1 0 001 1h14a1 1 0 001-1v-4.268a2 2 0 00-.572-1.304zM12 4a4 4 0 110 8 4 4 0 010-8z"/>
+                     stroke="{{ request()->is('orangtua/rekomendasi*') ? 'white' : '#7C4DFF' }}" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 11h16a8 8 0 01-16 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 19h12"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 4c0 1.5-1.5 2-1.5 3.5"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c0 1.5-1.5 2-1.5 3.5"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 4c0 1.5-1.5 2-1.5 3.5"/>
                 </svg>
             </div>
             Rekomendasi Nutrisi
@@ -130,7 +134,6 @@
         const dropdown = document.getElementById('profileDropdown');
         const chevron = document.getElementById('profileChevron');
         
-        // Toggle visibility and animation classes
         if (dropdown.classList.contains('invisible')) {
             dropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
             dropdown.classList.add('opacity-100', 'translate-y-0');
@@ -142,7 +145,6 @@
         }
     }
 
-    // Menutup dropdown jika user mengklik area lain di luar tombol profil
     window.addEventListener('click', function(e) {
         const profileBtn = document.getElementById('profileBtn');
         const dropdown = document.getElementById('profileDropdown');

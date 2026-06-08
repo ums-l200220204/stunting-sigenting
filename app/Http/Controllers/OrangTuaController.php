@@ -51,27 +51,26 @@ class OrangTuaController extends Controller
     // =========================
     // PROSES HITUNG Z SCORE
     // =========================
-    public function prosesInput(Request $request)
+public function prosesInput(Request $request)
     {
-
         $request->validate([
-
             'berat_badan' => 'required|numeric',
             'tinggi_badan' => 'required|numeric',
-
         ]);
 
         $anak = DB::table('anak')
             ->where('user_id', Auth::id())
             ->first();
 
+        // Tambahan keamanan: Cek apakah data anak ditemukan
+        if (!$anak) {
+            return back()->with('error', 'Data profil anak belum ditemukan.');
+        }
+
         $berat = $request->berat_badan;
-
         $tinggi = $request->tinggi_badan;
-
-        $usia = (int) Carbon::parse($anak->tanggal_lahir)
-        ->diffInMonths(now());
-
+        
+        $usia = (int) Carbon::parse($anak->tanggal_lahir)->diffInMonths(now());
         $jk = $anak->jenis_kelamin;
 
         // =========================
@@ -86,83 +85,61 @@ class OrangTuaController extends Controller
         // CEK DATA WHO
         // =========================
         if (!$standarTinggi) {
-
-            return back()->with(
-
-                'error',
-                'Data standar WHO tidak ditemukan'
-
-            );
-
+            return back()->with('error', 'Data standar WHO tidak ditemukan untuk usia dan jenis kelamin ini.');
         }
 
         // =========================
-        // HITUNG Z SCORE
+        // HITUNG Z SCORE (Sesuai Standar WHO)
         // =========================
-        $sd = $standarTinggi->sd_plus_1
-            - $standarTinggi->median;
+        $selisih = $tinggi - $standarTinggi->median;
 
-        $zscore = ($tinggi
-            - $standarTinggi->median) / $sd;
+        // Tentukan nilai simpang baku (SD) berdasarkan posisi tinggi anak
+        if ($selisih < 0) {
+            // Di bawah median
+            $sd = $standarTinggi->median - $standarTinggi->sd_min_1;
+        } else {
+            // Di atas atau sama dengan median
+            $sd = $standarTinggi->sd_plus_1 - $standarTinggi->median;
+        }
+
+        // Hindari division by zero (meski sangat jarang pada tabel rujukan)
+        $zscore = ($sd != 0) ? ($selisih / $sd) : 0;
 
         // =========================
         // STATUS GIZI
         // =========================
         if ($zscore < -3) {
-
-            $status = 'Stunting Berat';
-
+            $status = 'Stunting Berat'; // Sesuai Kemenkes: Sangat Pendek
         } elseif ($zscore < -2) {
-
-            $status = 'Stunting';
-
+            $status = 'Stunting';       // Sesuai Kemenkes: Pendek
         } elseif ($zscore <= 2) {
-
-            $status = 'Normal';
-
+            $status = 'Normal';         // Sesuai Kemenkes: Normal
         } else {
-
-            $status = 'Tinggi';
-
+            $status = 'Tinggi';         // Sesuai Kemenkes: Tinggi
         }
 
         // =========================
         // SIMPAN DATA
         // =========================
         DB::table('data_pertumbuhan')->insert([
-
-            'anak_id' => $anak->id,
-
+            'anak_id'            => $anak->id,
             'tanggal_pengukuran' => now(),
-
-            'usia_bulan' => $usia,
-
-            'berat_badan' => $berat,
-
-            'tinggi_badan' => $tinggi,
-
-            'z_score' => round($zscore, 2),
-
-            'status_gizi' => $status,
-
-            'created_at' => now(),
-
-            'updated_at' => now()
-
+            'usia_bulan'         => $usia,
+            'berat_badan'        => $berat,
+            'tinggi_badan'       => $tinggi,
+            'z_score'            => round($zscore, 2),
+            'status_gizi'        => $status,
+            'created_at'         => now(),
+            'updated_at'         => now()
         ]);
 
         return redirect()
             ->route('orangtua.input')
             ->with([
-
                 'success' => true,
-
-                'zscore' => round($zscore, 2),
-
-                'status' => $status
-
+                'zscore'  => round($zscore, 2),
+                'status'  => $status
             ]);
-
     }
 
     // =========================

@@ -308,7 +308,7 @@ class KaderController extends Controller
     // =========================
     // SIMPAN PERKEMBANGAN
     // =========================
-    public function storePerkembangan(Request $request)
+public function storePerkembangan(Request $request)
     {
         $request->validate([
             'anak_id' => 'required',
@@ -331,11 +331,8 @@ class KaderController extends Controller
         // =========================
         // HITUNG USIA BULAN
         // =========================
-        $usiaBulan = (int) Carbon::parse(
-            $anak->tanggal_lahir
-        )->diffInMonths(
-            Carbon::parse($request->tanggal_pengukuran)
-        );
+        $usiaBulan = (int) Carbon::parse($anak->tanggal_lahir)
+            ->diffInMonths(Carbon::parse($request->tanggal_pengukuran));
 
         // BATASI MAX 60
         if ($usiaBulan > 60) {
@@ -353,55 +350,51 @@ class KaderController extends Controller
         $standarTinggi = DB::table('standar_tinggi')
             ->where('usia_bulan', $usiaBulan)
             ->where(function ($query) use ($jk) {
-
                 if ($jk == 'L') {
-
                     $query->whereIn('jenis_kelamin', [
-                        'L',
-                        'LAKI-LAKI',
-                        'Laki-laki',
-                        'Laki-Laki'
+                        'L', 'LAKI-LAKI', 'Laki-laki', 'Laki-Laki'
                     ]);
-
                 } else {
-
                     $query->whereIn('jenis_kelamin', [
-                        'P',
-                        'PEREMPUAN',
-                        'Perempuan'
+                        'P', 'PEREMPUAN', 'Perempuan'
                     ]);
                 }
             })
             ->first();
 
-        // =========================
-        // HITUNG Z SCORE
-        // =========================
-        $sd = $standarTinggi->sd_plus_1
-            - $standarTinggi->median;
+        // Failsafe: Pastikan standar WHO ditemukan sebelum dihitung
+        if (!$standarTinggi) {
+            return back()->with('error', 'Data standar WHO tidak ditemukan untuk usia dan jenis kelamin ini.');
+        }
 
-        $zscore = (
-            $request->tinggi_badan
-            - $standarTinggi->median
-        ) / $sd;
+        // =========================
+        // HITUNG Z SCORE (Standar WHO)
+        // =========================
+        $tinggi = $request->tinggi_badan;
+        $selisih = $tinggi - $standarTinggi->median;
+
+        // Tentukan nilai simpang baku (SD) berdasarkan posisi tinggi anak
+        if ($selisih < 0) {
+            // Jika di bawah median
+            $sd = $standarTinggi->median - $standarTinggi->sd_min_1;
+        } else {
+            // Jika di atas atau sama dengan median
+            $sd = $standarTinggi->sd_plus_1 - $standarTinggi->median;
+        }
+
+        // Hindari division by zero
+        $zscore = ($sd != 0) ? ($selisih / $sd) : 0;
 
         // =========================
         // STATUS GIZI
         // =========================
         if ($zscore < -3) {
-
             $status = 'Stunting Berat';
-
         } elseif ($zscore < -2) {
-
             $status = 'Stunting';
-
         } elseif ($zscore <= 2) {
-
             $status = 'Normal';
-
         } else {
-
             $status = 'Tinggi';
         }
 
@@ -409,23 +402,20 @@ class KaderController extends Controller
         // SIMPAN DATA
         // =========================
         DB::table('data_pertumbuhan')->insert([
-            'anak_id' => $request->anak_id,
+            'anak_id'            => $request->anak_id,
             'tanggal_pengukuran' => $request->tanggal_pengukuran,
-            'usia_bulan' => $usiaBulan,
-            'berat_badan' => $request->berat_badan,
-            'tinggi_badan' => $request->tinggi_badan,
-            'z_score' => round($zscore, 2),
-            'status_gizi' => $status,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'usia_bulan'         => $usiaBulan,
+            'berat_badan'        => $request->berat_badan,
+            'tinggi_badan'       => $request->tinggi_badan,
+            'z_score'            => round($zscore, 2),
+            'status_gizi'        => $status,
+            'created_at'         => now(),
+            'updated_at'         => now(),
         ]);
 
         return redirect()
             ->back()
-            ->with(
-                'success',
-                'Data perkembangan berhasil disimpan'
-            );
+            ->with('success', 'Data perkembangan berhasil disimpan');
     }
 
     public function previewGizi(Request $request)
