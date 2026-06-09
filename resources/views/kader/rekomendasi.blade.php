@@ -297,8 +297,7 @@
                             <option value="0-6 Bulan">0 – 6 Bulan</option>
                             <option value="6-12 Bulan">6 – 12 Bulan</option>
                             <option value="1-3 Tahun">1 – 3 Tahun</option>
-                            <option value="3-5 Tahun">3 – 5 Tahun</option>
-                            <option value="Ibu Hamil/Menyusui">Ibu Hamil / Menyusui</option>
+                            <option value="4-5 Tahun">4 – 5 Tahun</option>
                         </select>
                     </div>
 

@@ -354,62 +354,73 @@
                 </div>
 
                 {{-- PASSWORD --}}
-                <div class="grid grid-cols-1
-                            lg:grid-cols-2
-                            gap-8">
-
-                    {{-- PASSWORD --}}
-                    <div>
-
-                        <label class="block
-                                      text-sm font-bold
-                                      text-[#1E293B]
-                                      mb-3">
-
-                            Password
-
-                        </label>
-
+                <div>
+                    <label class="block text-sm font-bold text-[#1E293B] mb-3">
+                        Password
+                    </label>
+                    <div class="relative">
                         <input type="password"
+                            id="password"
                             name="password"
                             placeholder="Masukkan password"
                             class="w-full h-14
-                                   rounded-2xl
-                                   border border-[#E5EDF6]
-                                   bg-[#F8FBFF]
-                                   px-5 text-sm
-                                   focus:outline-none
-                                   focus:ring-2
-                                   focus:ring-[#0078C1]/20">
-
+                                rounded-2xl
+                                border border-[#E5EDF6]
+                                bg-[#F8FBFF]
+                                px-5 pr-14 text-sm
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-[#0078C1]/20">
+                        <button type="button"
+                            onclick="togglePassword('password', 'eye-password')"
+                            class="absolute right-4 top-1/2 -translate-y-1/2
+                                text-gray-400 hover:text-[#0078C1]
+                                transition duration-200">
+                            <svg id="eye-password" xmlns="http://www.w3.org/2000/svg"
+                                class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7
+                                    -1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
                     </div>
+                </div>
 
-                    {{-- KONFIRMASI --}}
-                    <div>
-
-                        <label class="block
-                                      text-sm font-bold
-                                      text-[#1E293B]
-                                      mb-3">
-
-                            Konfirmasi Password
-
-                        </label>
-
+                {{-- KONFIRMASI PASSWORD --}}
+                <div>
+                    <label class="block text-sm font-bold text-[#1E293B] mb-3">
+                        Konfirmasi Password
+                    </label>
+                    <div class="relative">
                         <input type="password"
+                            id="password_confirmation"
                             name="password_confirmation"
                             placeholder="Konfirmasi password"
                             class="w-full h-14
-                                   rounded-2xl
-                                   border border-[#E5EDF6]
-                                   bg-[#F8FBFF]
-                                   px-5 text-sm
-                                   focus:outline-none
-                                   focus:ring-2
-                                   focus:ring-[#0078C1]/20">
-
+                                rounded-2xl
+                                border border-[#E5EDF6]
+                                bg-[#F8FBFF]
+                                px-5 pr-14 text-sm
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-[#0078C1]/20">
+                        <button type="button"
+                            onclick="togglePassword('password_confirmation', 'eye-confirm')"
+                            class="absolute right-4 top-1/2 -translate-y-1/2
+                                text-gray-400 hover:text-[#0078C1]
+                                transition duration-200">
+                            <svg id="eye-confirm" xmlns="http://www.w3.org/2000/svg"
+                                class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7
+                                    -1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
                     </div>
-
                 </div>
 
                 {{-- BUTTON --}}
@@ -458,5 +469,32 @@
     </div>
 
 </div>
+@push('scripts')
+<script>
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon  = document.getElementById(iconId);
 
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+
+        // Ganti icon: eye-off saat tampil, eye saat tersembunyi
+        icon.innerHTML = isHidden
+            ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7
+                     a9.97 9.97 0 012.049-3.414M6.53 6.53A9.97 9.97 0 0112 5
+                     c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-1.357 2.647
+                     M6.53 6.53L3 3m3.53 3.53l11.94 11.94M15 12a3 3 0 00-3-3
+                     m0 6a3 3 0 01-2.83-2" />
+               <line x1="3" y1="3" x2="21" y2="21"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" />`
+            : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7
+                     -1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+    }
+</script>
+@endpush
 @endsection

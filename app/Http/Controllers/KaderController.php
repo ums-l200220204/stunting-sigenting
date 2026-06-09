@@ -592,6 +592,7 @@ public function storePerkembangan(Request $request)
         // SIMPAN DATABASE
         // =========================
         DB::table('rekomendasi_nutrisi')->insert([
+            'user_id'         => auth()->id(),
             'kategori_usia'   => $request->kategori_usia,
             'judul'           => $request->judul,
             'deskripsi'       => $request->deskripsi,
