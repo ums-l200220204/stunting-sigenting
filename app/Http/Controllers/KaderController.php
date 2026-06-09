@@ -621,7 +621,7 @@ public function storePerkembangan(Request $request)
             'kategori_usia'   => 'required',
             'judul'           => 'required',
             'deskripsi'       => 'required',
-            'gambar'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar'          => 'nullable|image|mimes:jpeg,png,jpg,heic|max:10000',
         ]);
 
         $rekomendasi = DB::table('rekomendasi_nutrisi')->where('id', $id)->first();

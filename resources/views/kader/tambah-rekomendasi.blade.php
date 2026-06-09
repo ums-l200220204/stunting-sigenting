@@ -67,7 +67,7 @@
                         class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-[#0078C1] focus:ring-2 focus:ring-[#0078C1]/10 outline-none transition-all text-sm text-gray-400
                         file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EEF5FD] file:text-[#0078C1] hover:file:bg-[#D8EAFB] file:transition-all">
                 </div>
-                <p class="text-[11px] text-gray-300">Format: JPG, PNG, WebP. Maks 2MB.</p>
+                <p class="text-[11px] text-gray-300">Format: JPG, PNG, WebP. Maks 10MB.</p>
             </div>
 
             {{-- DESKRIPSI --}}
