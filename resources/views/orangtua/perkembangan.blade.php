@@ -8,6 +8,14 @@
 /* ── Scrollable legend pills ── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Insight card animations ── */
+.insight-card {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.insight-card.hidden-card {
+    display: none;
+}
 </style>
 
 {{-- ════════════════════════════════════════════════════════════════
@@ -114,7 +122,6 @@
                     </div>
                 </div>
 
-                {{-- Scroll hint (mobile only) --}}
                 <p class="sm:hidden text-[10px] font-medium mb-2 flex items-center gap-1.5" style="color:#94a3b8;">
                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -131,6 +138,76 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- ── INSIGHT BERAT BADAN ── --}}
+                @php
+                    $lastBerat      = collect($beratData)->last();
+                    $lastBeratAcuan = collect($beratAcuan)->last();
+                    $isBeratValid   = ($lastBerat !== null && $lastBeratAcuan !== null);
+                    
+                    if ($isBeratValid) {
+                        $beratKurang  = $lastBerat < $lastBeratAcuan;
+                        $selisihBerat = round(abs($lastBerat - $lastBeratAcuan), 1);
+                    }
+                @endphp
+
+                @if($isBeratValid)
+                    @if($beratKurang)
+                        {{-- Card: KURANG (pink/peringatan) --}}
+                        <div class="insight-card mt-4 flex items-start gap-3 rounded-2xl px-5 py-4"
+                             style="background:rgba(253,75,199,0.06); border:1px solid rgba(253,75,199,0.2);">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" style="color:#FD4BC7;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-[13px] sm:text-[14px] mb-1" style="color:#c0177a; font-family:'Sora',sans-serif;">
+                                    Perlu Perhatian Lebih
+                                </p>
+                                <p class="text-[11px] sm:text-[12px] leading-relaxed mb-3" style="color:#9d3d7e;">
+                                    Berat badan anak saat ini <strong>{{ $lastBerat }} kg</strong>,
+                                    sekitar <strong>{{ $selisihBerat }} kg</strong> di bawah standar median WHO ({{ $lastBeratAcuan }} kg).
+                                    Yuk, tingkatkan asupan gizi harian si kecil agar tumbuh kembangnya kembali optimal.
+                                </p>
+                                <a href="{{ route('orangtua.rekomendasi') }}"
+                                   class="inline-flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold"
+                                   style="color:#FD4BC7;">
+                                    Lihat Rekomendasi Nutrisi
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        {{-- Card: NORMAL / TINGGI (hijau/apresiasi) --}}
+                        <div class="insight-card mt-4 flex items-start gap-3 rounded-2xl px-5 py-4"
+                             style="background:rgba(0,201,81,0.06); border:1px solid rgba(0,201,81,0.2);">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" style="color:#00C951;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-[13px] sm:text-[14px] mb-1" style="color:#059669; font-family:'Sora',sans-serif;">
+                                    Tumbuh Kembang Sangat Baik! 🎉
+                                </p>
+                                <p class="text-[11px] sm:text-[12px] leading-relaxed" style="color:#2d7a55;">
+                                    Berat badan anak saat ini <strong>{{ $lastBerat }} kg</strong>, 
+                                    @if($lastBerat > $lastBeratAcuan)
+                                        sudah <strong>{{ $selisihBerat }} kg</strong> di atas standar median WHO ({{ $lastBeratAcuan }} kg).
+                                    @else
+                                        sudah <strong>tepat sesuai</strong> dengan standar median WHO ({{ $lastBeratAcuan }} kg).
+                                    @endif
+                                    Pertahankan pola makan bergizi dan kebiasaan sehat ini ya, Bunda/Ayah!
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                @endif
             </div>
 
             <div class="h-px w-full" style="background:#EEF2F8;"></div>
@@ -177,6 +254,78 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- ── INSIGHT TINGGI BADAN ── --}}
+                @php
+                    $lastTinggi      = collect($tinggiData)->last();
+                    $lastTinggiAcuan = collect($tinggiAcuan)->last();
+                    $isTinggiValid   = ($lastTinggi !== null && $lastTinggiAcuan !== null);
+                    
+                    if ($isTinggiValid) {
+                        $tinggiKurang  = $lastTinggi < $lastTinggiAcuan;
+                        $selisihTinggi = round(abs($lastTinggi - $lastTinggiAcuan), 1);
+                    }
+                @endphp
+
+                @if($isTinggiValid)
+                    @if($tinggiKurang)
+                        {{-- Card: KURANG (pink/peringatan) --}}
+                        <div id="insightTinggi"
+                             class="insight-card mt-4 flex items-start gap-3 rounded-2xl px-5 py-4"
+                             style="background:rgba(253,75,199,0.06); border:1px solid rgba(253,75,199,0.2);">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" style="color:#FD4BC7;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-[13px] sm:text-[14px] mb-1" style="color:#c0177a; font-family:'Sora',sans-serif;">
+                                    Perlu Perhatian Lebih
+                                </p>
+                                <p class="text-[11px] sm:text-[12px] leading-relaxed mb-3" style="color:#9d3d7e;">
+                                    Tinggi badan anak saat ini <strong>{{ $lastTinggi }} cm</strong>,
+                                    sekitar <strong>{{ $selisihTinggi }} cm</strong> di bawah standar median WHO ({{ $lastTinggiAcuan }} cm).
+                                    Pastikan anak mendapat asupan kalsium, protein, dan vitamin D yang cukup untuk mendukung pertumbuhan tinggi badannya.
+                                </p>
+                                <a href="{{ route('orangtua.rekomendasi') }}"
+                                   class="inline-flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold"
+                                   style="color:#FD4BC7;">
+                                    Lihat Rekomendasi Nutrisi
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        {{-- Card: NORMAL / TINGGI (hijau/apresiasi) --}}
+                        <div id="insightTinggi"
+                             class="insight-card mt-4 flex items-start gap-3 rounded-2xl px-5 py-4"
+                             style="background:rgba(0,201,81,0.06); border:1px solid rgba(0,201,81,0.2);">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" style="color:#00C951;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-[13px] sm:text-[14px] mb-1" style="color:#059669; font-family:'Sora',sans-serif;">
+                                    Pertumbuhan Optimal! 🎉
+                                </p>
+                                <p class="text-[11px] sm:text-[12px] leading-relaxed" style="color:#2d7a55;">
+                                    Tinggi badan anak saat ini <strong>{{ $lastTinggi }} cm</strong>, 
+                                    @if($lastTinggi > $lastTinggiAcuan)
+                                        sudah <strong>{{ $selisihTinggi }} cm</strong> di atas standar median WHO ({{ $lastTinggiAcuan }} cm).
+                                    @else
+                                        sudah <strong>tepat sesuai</strong> dengan standar median WHO ({{ $lastTinggiAcuan }} cm).
+                                    @endif
+                                    Terus berikan asupan gizi seimbang agar si kecil tumbuh tinggi dan sehat maksimal!
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                @endif
             </div>
 
         </div>
@@ -407,23 +556,17 @@
 
     /* ══════════════════════════════════════
        AUTO-SCROLL KE DATA TERBARU (paling kanan)
-       Dijalankan setelah semua chart selesai render
-       menggunakan requestAnimationFrame agar DOM
-       sudah ter-paint sebelum scroll dilakukan.
     ══════════════════════════════════════ */
     function scrollToLatest() {
         const scrollIds = ['beratScroll', 'tinggiScroll'];
         scrollIds.forEach(function(id) {
             const el = document.getElementById(id);
             if (el) {
-                // scrollLeft = scrollWidth memaksa posisi ke ujung kanan
                 el.scrollLeft = el.scrollWidth;
             }
         });
     }
 
-    // Tunggu dua frame: frame pertama Chart.js render canvas,
-    // frame kedua scroll sudah bisa dihitung dengan benar.
     requestAnimationFrame(function() {
         requestAnimationFrame(scrollToLatest);
     });

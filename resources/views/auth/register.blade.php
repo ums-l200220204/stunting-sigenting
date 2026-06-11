@@ -369,6 +369,7 @@
                             <label class="field-label">Tanggal Lahir</label>
                             <input type="date" name="tanggal_lahir"
                                    value="{{ old('tanggal_lahir') }}"
+                                   max="{{ date('Y-m-d') }}"
                                    class="reg-input">
                         </div>
 

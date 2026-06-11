@@ -298,6 +298,7 @@
                                     Tanggal Lahir Anak
                                 </label>
                                 <input type="date" name="tanggal_lahir"
+                                       max="{{ date('Y-m-d') }}"
                                        disabled
                                        class="w-full h-11 px-4 rounded-xl text-sm
                                               text-slate-700 border border-slate-200

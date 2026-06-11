@@ -96,7 +96,7 @@ public function prosesInput(Request $request)
         // Tentukan nilai simpang baku (SD) berdasarkan posisi tinggi anak
         if ($selisih < 0) {
             // Di bawah median
-            $sd = $standarTinggi->median - $standarTinggi->sd_min_1;
+            $sd = $standarTinggi->median - $standarTinggi->sd_minus_1;
         } else {
             // Di atas atau sama dengan median
             $sd = $standarTinggi->sd_plus_1 - $standarTinggi->median;
