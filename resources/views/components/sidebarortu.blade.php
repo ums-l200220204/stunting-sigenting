@@ -39,16 +39,33 @@
         {{-- Dropdown Menu (Muncul saat ditekan) --}}
         <div id="profileDropdown" 
              class="absolute left-4 right-4 top-[85px] mt-2 bg-white border border-slate-100 shadow-xl rounded-2xl z-50 opacity-0 invisible translate-y-[-10px] transition-all duration-300">
-            <form action="{{ route('logout') }}" method="POST" class="p-1.5">
-                @csrf
-                <button type="submit" 
-                        class="w-full flex items-center gap-3 px-3 py-3 rounded-xl font-semibold text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors">
+            <div class="p-1.5 flex flex-col">
+                
+                {{-- Edit Profil --}}
+                <a href="{{ route('orangtua.profil') }}" 
+                   class="w-full flex items-center gap-3 px-3 py-3 rounded-xl font-semibold text-sm text-slate-600 hover:bg-slate-50 hover:text-[#005BA9] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
-                    Logout
-                </button>
-            </form>
+                    Edit Profil
+                </a>
+
+                {{-- Garis Pemisah --}}
+                <div class="h-px bg-slate-100 mx-2 my-1"></div>
+
+                {{-- Logout --}}
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full flex items-center gap-3 px-3 py-3 rounded-xl font-semibold text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </button>
+                </form>
+                
+            </div>
         </div>
 
     </div>

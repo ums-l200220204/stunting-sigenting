@@ -51,7 +51,7 @@ class OrangTuaController extends Controller
     // =========================
     // PROSES HITUNG Z SCORE
     // =========================
-public function prosesInput(Request $request)
+    public function prosesInput(Request $request)
     {
         $request->validate([
             'berat_badan' => 'required|numeric',
@@ -76,7 +76,14 @@ public function prosesInput(Request $request)
         // =========================
         // AMBIL STANDAR WHO
         // =========================
+        // 1. Ambil Standar Tinggi
         $standarTinggi = DB::table('standar_tinggi')
+            ->where('usia_bulan', $usia)
+            ->where('jenis_kelamin', $jk)
+            ->first();
+
+        // 2. Ambil Standar Berat (TAMBAHAN BARU)
+        $standarBerat = DB::table('standar_berat')
             ->where('usia_bulan', $usia)
             ->where('jenis_kelamin', $jk)
             ->first();
@@ -84,7 +91,8 @@ public function prosesInput(Request $request)
         // =========================
         // CEK DATA WHO
         // =========================
-        if (!$standarTinggi) {
+        // Pengecekan diperbarui untuk memastikan kedua standar ditemukan
+        if (!$standarTinggi || !$standarBerat) {
             return back()->with('error', 'Data standar WHO tidak ditemukan untuk usia dan jenis kelamin ini.');
         }
 
@@ -127,6 +135,9 @@ public function prosesInput(Request $request)
             'usia_bulan'         => $usia,
             'berat_badan'        => $berat,
             'tinggi_badan'       => $tinggi,
+            // TAMBAHAN BARU: Simpan ID dari tabel referensi
+            'standar_berat_id'   => $standarBerat->id,
+            'standar_tinggi_id'  => $standarTinggi->id,
             'z_score'            => round($zscore, 2),
             'status_gizi'        => $status,
             'created_at'         => now(),
@@ -254,6 +265,72 @@ public function prosesInput(Request $request)
 
         );
 
+    }
+
+    // =========================
+    // HALAMAN EDIT PROFIL
+    // =========================
+    public function editProfil()
+    {
+        $user = Auth::user();
+        
+        $anak = DB::table('anak')
+            ->where('user_id', $user->id)
+            ->first();
+
+        return view('orangtua.profil', compact('user', 'anak'));
+    }
+
+    // =========================
+    // UPDATE PROFIL
+    // =========================
+    public function updateProfil(Request $request)
+    {
+        $user = Auth::user();
+
+        // 1. Validasi input form
+        $request->validate([
+            // Data Orang Tua
+            'nama'          => 'required',
+            'email'         => 'required|email|unique:users,email,' . $user->id,
+            'nomor_hp'      => 'required',
+            'alamat'        => 'required',
+            
+            // Data Anak
+            'nama_anak'     => 'required',
+            'jenis_kelamin' => 'required',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
+        ], [
+            'tanggal_lahir.before_or_equal' => 'Tanggal lahir anak tidak boleh melebihi hari ini.',
+        ]);
+
+        // 2. Proses Update dengan Try-Catch
+        try {
+            // Update Data User (Orang Tua)
+            $userData = [
+                'nama'       => $request->nama,
+                'email'      => $request->email,
+                'nomor_hp'   => $request->nomor_hp,
+                'alamat'     => $request->alamat,
+                'updated_at' => now(),
+            ];
+
+            DB::table('users')->where('id', $user->id)->update($userData);
+
+            // Update Data Anak
+            DB::table('anak')->where('user_id', $user->id)->update([
+                'nama_anak'     => $request->nama_anak,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'updated_at'    => now(),
+            ]);
+
+            return back()->with('success', 'Profil dan data anak berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            // Jika terjadi kegagalan (misal database error), kembalikan dengan pesan error
+            return back()->with('error', 'Terjadi kesalahan sistem saat memperbarui profil. Silakan coba lagi.')->withInput();
+        }
     }
 
 }

@@ -317,6 +317,10 @@ Route::middleware('auth:orangtua')->group(function () {
 
     ])->name('orangtua.detailrekomendasi');
 
+    // Tambahkan di dalam group route 'orang_tua'
+    Route::get('/orangtua/profil', [App\Http\Controllers\OrangTuaController::class, 'editProfil'])->name('orangtua.profil');
+    Route::put('/orangtua/profil', [App\Http\Controllers\OrangTuaController::class, 'updateProfil'])->name('orangtua.profil.update');
+
 });
 
 // ================= LOGOUT =================

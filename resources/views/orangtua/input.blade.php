@@ -381,6 +381,15 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        
+        /* Menyembunyikan Scrollbar di Firefox dan IE/Edge lama */
+        scrollbar-width: none; 
+        -ms-overflow-style: none;  
+    }
+
+    /* Menyembunyikan Scrollbar di Chrome, Safari, dan Edge baru */
+    #resultModal .modal-body::-webkit-scrollbar {
+        display: none;
     }
 </style>
 

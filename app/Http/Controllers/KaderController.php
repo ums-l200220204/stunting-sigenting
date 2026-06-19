@@ -308,7 +308,7 @@ class KaderController extends Controller
     // =========================
     // SIMPAN PERKEMBANGAN
     // =========================
-public function storePerkembangan(Request $request)
+    public function storePerkembangan(Request $request)
     {
         $request->validate([
             'anak_id' => 'required',
@@ -345,8 +345,9 @@ public function storePerkembangan(Request $request)
         $jk = strtoupper(trim($anak->jenis_kelamin));
 
         // =========================
-        // AMBIL DATA WHO
+        // AMBIL DATA WHO (TINGGI & BERAT)
         // =========================
+        // 1. Ambil Standar Tinggi
         $standarTinggi = DB::table('standar_tinggi')
             ->where('usia_bulan', $usiaBulan)
             ->where(function ($query) use ($jk) {
@@ -362,8 +363,24 @@ public function storePerkembangan(Request $request)
             })
             ->first();
 
+        // 2. Ambil Standar Berat (TAMBAHAN BARU)
+        $standarBerat = DB::table('standar_berat')
+            ->where('usia_bulan', $usiaBulan)
+            ->where(function ($query) use ($jk) {
+                if ($jk == 'L') {
+                    $query->whereIn('jenis_kelamin', [
+                        'L', 'LAKI-LAKI', 'Laki-laki', 'Laki-Laki'
+                    ]);
+                } else {
+                    $query->whereIn('jenis_kelamin', [
+                        'P', 'PEREMPUAN', 'Perempuan'
+                    ]);
+                }
+            })
+            ->first();
+
         // Failsafe: Pastikan standar WHO ditemukan sebelum dihitung
-        if (!$standarTinggi) {
+        if (!$standarTinggi || !$standarBerat) {
             return back()->with('error', 'Data standar WHO tidak ditemukan untuk usia dan jenis kelamin ini.');
         }
 
@@ -407,6 +424,9 @@ public function storePerkembangan(Request $request)
             'usia_bulan'         => $usiaBulan,
             'berat_badan'        => $request->berat_badan,
             'tinggi_badan'       => $request->tinggi_badan,
+            // TAMBAHAN BARU: Simpan Foreign Key ID Standar
+            'standar_berat_id'   => $standarBerat->id, 
+            'standar_tinggi_id'  => $standarTinggi->id,
             'z_score'            => round($zscore, 2),
             'status_gizi'        => $status,
             'created_at'         => now(),
@@ -576,7 +596,7 @@ public function storePerkembangan(Request $request)
             'kategori_usia'   => 'required',
             'judul'           => 'required',
             'deskripsi'       => 'required',
-            'gambar'          => 'nullable|image|mimes:jpeg,png,jpg|max:10000', // Tambahkan validasi gambar
+            'gambar'          => 'nullable|image|mimes:jpeg,png,jpg|max:100000', // Tambahkan validasi gambar
         ]);
 
         // =========================
