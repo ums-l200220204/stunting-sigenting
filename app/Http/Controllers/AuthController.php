@@ -40,6 +40,12 @@ class AuthController extends Controller
 
             'password' => 'required'
 
+        ], [
+
+            'login.required' => 'Email atau Nomor HP wajib diisi.',
+
+            'password.required' => 'Password wajib diisi.'
+
         ]);
 
         // =========================
@@ -119,19 +125,31 @@ class AuthController extends Controller
 
                 }
 
+            } else {
+
+                // =========================
+                // PASSWORD SALAH
+                // =========================
+                return back()->withErrors([
+
+                    'password' => 'Password yang Anda masukkan salah.'
+
+                ])->onlyInput('login');
+
             }
 
+        } else {
+
+            // =========================
+            // EMAIL / NOMOR HP SALAH
+            // =========================
+            return back()->withErrors([
+
+                'login' => 'Email atau Nomor HP tidak terdaftar.'
+
+            ])->onlyInput('login');
+
         }
-
-        // =========================
-        // LOGIN GAGAL
-        // =========================
-        return back()->with(
-
-            'error',
-            'Email/Nomor HP atau Password salah'
-
-        );
 
     }
 
@@ -238,7 +256,7 @@ class AuthController extends Controller
 
     }
 
-// =========================
+    // =========================
     // HALAMAN LUPA PASSWORD
     // =========================
     public function forgotPassword()
