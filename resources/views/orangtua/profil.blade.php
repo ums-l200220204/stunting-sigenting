@@ -93,11 +93,22 @@
                         Profil Anak
                     </h2>
                     <div class="space-y-5">
-                        {{-- Nama Anak --}}
-                        <div>
-                            <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Nama Anak <span class="text-red-500">*</span></label>
-                            <input type="text" name="nama_anak" required value="{{ old('nama_anak', $anak->nama_anak ?? '') }}" 
-                                   class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {{-- NIK Anak --}}
+                            <div>
+                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">NIK Anak <span class="text-red-500">*</span></label>
+                                <input type="text" name="nik_anak" required value="{{ old('nik_anak', $anak->nik ?? '') }}" 
+                                       maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                            </div>
+
+                            {{-- Nama Anak --}}
+                            <div>
+                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Nama Anak <span class="text-red-500">*</span></label>
+                                <input type="text" name="nama_anak" required value="{{ old('nama_anak', $anak->nama_anak ?? '') }}" 
+                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -132,34 +143,45 @@
                         Profil Orang Tua (Akun)
                     </h2>
                     <div class="space-y-5">
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {{-- NIK Orang Tua --}}
+                            <div>
+                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">NIK Orang Tua <span class="text-red-500">*</span></label>
+                                <input type="text" name="nik" required value="{{ old('nik', $user->nik ?? '') }}" 
+                                       maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                            </div>
+
                             {{-- Nama Orang Tua --}}
                             <div>
                                 <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Nama Lengkap <span class="text-red-500">*</span></label>
-                                <input type="text" name="nama" required value="{{ old('nama', $user->nama) }}" 
-                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
-                            </div>
-                            
-                            {{-- No HP --}}
-                            <div>
-                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Nomor HP/WA <span class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_hp" required value="{{ old('nomor_hp', $user->nomor_hp) }}" 
+                                <input type="text" name="nama" required value="{{ old('nama', $user->nama ?? '') }}" 
                                        class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
                             </div>
                         </div>
 
-                        {{-- Email --}}
-                        <div>
-                            <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Alamat Email <span class="text-red-500">*</span></label>
-                            <input type="email" name="email" required value="{{ old('email', $user->email) }}" 
-                                   class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {{-- Email --}}
+                            <div>
+                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Alamat Email <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" required value="{{ old('email', $user->email ?? '') }}" 
+                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                            </div>
+
+                            {{-- No HP --}}
+                            <div>
+                                <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Nomor HP/WA <span class="text-red-500">*</span></label>
+                                <input type="text" name="nomor_hp" required value="{{ old('nomor_hp', $user->nomor_hp ?? '') }}" 
+                                       class="w-full h-[3.4rem] rounded-2xl border bg-[#F8FAFC] px-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A]">
+                            </div>
                         </div>
 
                         {{-- Alamat --}}
                         <div>
                             <label class="block text-[11px] font-bold tracking-[0.12em] uppercase mb-2.5 text-slate-500">Alamat Rumah <span class="text-red-500">*</span></label>
                             <textarea name="alamat" rows="3" required
-                                      class="w-full rounded-2xl border bg-[#F8FAFC] p-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A] resize-none">{{ old('alamat', $user->alamat) }}</textarea>
+                                      class="w-full rounded-2xl border bg-[#F8FAFC] p-4 text-[14px] font-semibold outline-none transition-all duration-200 focus:bg-white focus:ring-[3px] focus:ring-[#003E7A]/10 focus:border-[#003E7A] resize-none">{{ old('alamat', $user->alamat ?? '') }}</textarea>
                         </div>
                     </div>
                 </div>

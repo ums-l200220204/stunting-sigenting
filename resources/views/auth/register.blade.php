@@ -346,9 +346,19 @@
                         Data Anak
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                        <div class="field-group md:col-span-1">
+                        <div class="field-group">
+                            <label class="field-label">NIK Anak</label>
+                            <input type="text" name="nik_anak"
+                                   value="{{ old('nik_anak') }}"
+                                   placeholder="Masukkan 16 digit NIK Anak"
+                                   maxlength="16" inputmode="numeric"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   class="reg-input">
+                        </div>
+
+                        <div class="field-group">
                             <label class="field-label">Nama Anak</label>
                             <input type="text" name="nama_anak"
                                    value="{{ old('nama_anak') }}"
@@ -388,6 +398,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                         <div class="field-group">
+                            <label class="field-label">NIK Orang Tua</label>
+                            <input type="text" name="nik"
+                                   value="{{ old('nik') }}"
+                                   placeholder="Masukkan 16 digit NIK Anda"
+                                   maxlength="16" inputmode="numeric"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   class="reg-input">
+                        </div>
+
+                        <div class="field-group">
                             <label class="field-label">Nama Orang Tua</label>
                             <input type="text" name="nama"
                                    value="{{ old('nama') }}"
@@ -411,7 +431,7 @@
                                    class="reg-input">
                         </div>
 
-                        <div class="field-group">
+                        <div class="field-group md:col-span-2">
                             <label class="field-label">Alamat</label>
                             <input type="text" name="alamat"
                                    value="{{ old('alamat') }}"

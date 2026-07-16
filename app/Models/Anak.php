@@ -14,6 +14,7 @@ class Anak extends Model
 
     protected $fillable = [
         'user_id',
+        'nik',
         'nama_anak',
         'tanggal_lahir',
         'jenis_kelamin',

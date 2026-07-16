@@ -148,6 +148,19 @@
             {{-- Info grid --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
 
+                {{-- NIK Pengguna --}}
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 hover:border-[#005BA9]/20 hover:bg-[#F0F7FF] transition-colors duration-200">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-6 h-6 rounded-lg bg-[#EEF5FD] flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-[#0078C1]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">NIK</span>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800">{{ $user->nik ?? '-' }}</p>
+                </div>
+
                 {{-- Email --}}
                 <div class="bg-slate-50 rounded-xl p-4 border border-slate-100
                             hover:border-[#005BA9]/20 hover:bg-[#F0F7FF] transition-colors duration-200">
@@ -264,6 +277,12 @@
                                 Nama Anak
                             </p>
                             <p class="text-sm font-bold text-slate-800">{{ $anak->nama_anak }}</p>
+                        </div>
+
+                        {{-- NIK Anak --}}
+                        <div class="bg-white rounded-xl p-3.5 border border-emerald-100">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">NIK Anak</p>
+                            <p class="text-sm font-bold text-slate-800">{{ $anak->nik ?? '-' }}</p>
                         </div>
 
                         {{-- Jenis Kelamin --}}

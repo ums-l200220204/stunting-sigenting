@@ -143,6 +143,15 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                             <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
+                                    NIK
+                                </label>
+                                <input type="text" name="nik" placeholder="Masukkan 16 digit NIK" 
+                                    maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    class="w-full h-11 px-4 rounded-xl text-sm border border-slate-200 bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200">
+                            </div>
+
+                            <div>
                                 <label class="block text-[10px] sm:text-[11px] font-bold
                                               uppercase tracking-widest text-slate-400 mb-1.5">
                                     Nama Lengkap
@@ -225,6 +234,16 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">NIK Anak</label>
+                                <input type="text" name="nik_anak" placeholder="16 digit NIK Anak" maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full h-11 px-4 rounded-xl text-sm border border-slate-200 bg-slate-50">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">NIK Orang Tua</label>
+                                <input type="text" name="nik" placeholder="16 digit NIK" maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full h-11 px-4 rounded-xl text-sm border border-slate-200 bg-slate-50">
+                            </div>
 
                             <div>
                                 <label class="block text-[10px] sm:text-[11px] font-bold

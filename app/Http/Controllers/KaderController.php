@@ -42,7 +42,11 @@ class KaderController extends Controller
 
                 'users.email',
 
-                'users.nomor_hp'
+                'users.nomor_hp',
+
+                'users.nik as nik_orangtua', 
+                
+                'anak.nik as nik_anak'
 
             )
 
@@ -75,7 +79,19 @@ class KaderController extends Controller
                     )
 
                     ->orWhere(
+                        'users.nik',
+                        'like',
+                        "%{$search}%"
+                    )
+
+                    ->orWhere(
                         'anak.jenis_kelamin',
+                        'like',
+                        "%{$search}%"
+                    )
+
+                    ->orWhere(
+                        'anak.nik',
                         'like',
                         "%{$search}%"
                     );
@@ -172,7 +188,11 @@ class KaderController extends Controller
 
                 'users.nomor_hp',
 
-                'users.alamat'
+                'users.alamat',
+
+                'users.nik as nik_orangtua',
+
+                'anak.nik as nik_anak'
 
             )
 
@@ -842,11 +862,15 @@ class KaderController extends Controller
 
             'nama_anak'             => 'required',
 
+            'nik_anak'              => 'required|size:16|unique:anak,nik',
+
             'jenis_kelamin'         => 'required',
 
             'tanggal_lahir'         => 'required|date',
 
             'nama'                  => 'required',
+
+            'nik'                   => 'required|size:16|unique:users,nik',
 
             'email'                 => 'required|email|unique:users,email',
 
@@ -874,6 +898,8 @@ class KaderController extends Controller
 
             'nama'              => $request->nama,
 
+            'nik'               => $request->nik,
+
             'email'             => $request->email,
 
             'nomor_hp'          => $request->nomor_hp,
@@ -898,6 +924,8 @@ class KaderController extends Controller
             'user_id'           => $userId,
 
             'nama_anak'         => $request->nama_anak,
+
+            'nik'               => $request->nik_anak,
 
             'jenis_kelamin'     => $request->jenis_kelamin,
 
@@ -950,7 +978,11 @@ class KaderController extends Controller
 
                 'anak.*',
 
+                'anak.nik',
+
                 'users.nama',
+
+                'users.nik as nik_orangtua',
 
                 'users.email',
 
@@ -1001,6 +1033,10 @@ class KaderController extends Controller
 
             'nama_anak'         => 'required',
 
+            'nik_anak'          => 'required|size:16',
+
+            'nik'               => 'required|size:16',
+
             'jenis_kelamin'     => 'required',
 
             'tanggal_lahir'     => 'required|date',
@@ -1035,6 +1071,8 @@ class KaderController extends Controller
 
                 'nama'          => $request->nama,
 
+                'nik'        => $request->nik,
+
                 'email'         => $request->email,
 
                 'nomor_hp'      => $request->nomor_hp,
@@ -1055,6 +1093,8 @@ class KaderController extends Controller
             ->update([
 
                 'nama_anak'         => $request->nama_anak,
+
+                'nik'           => $request->nik_anak,
 
                 'jenis_kelamin'     => $request->jenis_kelamin,
 

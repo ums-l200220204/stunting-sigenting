@@ -248,6 +248,7 @@
                     <tr class="bg-slate-50/70 border-b border-slate-100">
                         <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-10">#</th>
                         <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nama</th>
+                        <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">NIK</th>
                         <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role</th>
                         <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email</th>
                         <th class="text-left py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Anak</th>
@@ -288,6 +289,11 @@
                                     </span>
                                 </div>
                             </td>
+
+                            <td class="py-3.5 px-4">
+                                {{ $user->nik ?? '-' }}
+                            </td>
+
 
                             {{-- Role badge --}}
                             <td class="py-3.5 px-4">

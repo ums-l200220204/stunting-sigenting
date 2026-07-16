@@ -195,6 +195,17 @@
                     @enderror
                 </div>
 
+                {{-- GRID INPUT NIK --}}
+                {{-- NIK Orang Tua --}}
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">
+                        NIK Orang Tua <span class="text-red-400">*</span>
+                    </label>
+                    <input type="text" name="nik" required value="{{ old('nik', $user->nik) }}" 
+                        maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        class="w-full h-10 px-4 rounded-xl text-sm border border-slate-200 bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all">
+                </div>
+
                 {{-- Email --}}
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">
@@ -333,6 +344,18 @@
                                 <p class="text-[11px] text-red-500 mt-1.5">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        {{-- NIK Anak (Hanya tampil jika user adalah orang tua) --}}
+                        @if($user->role == 'orang_tua' && $anak)
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">
+                                NIK Anak <span class="text-red-400">*</span>
+                            </label>
+                            <input type="text" name="nik_anak" required value="{{ old('nik_anak', $anak->nik) }}" 
+                                maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full h-10 px-4 rounded-xl text-sm border border-slate-200 bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all">
+                        </div>
+                        @endif
 
                         {{-- Jenis Kelamin --}}
                         <div>

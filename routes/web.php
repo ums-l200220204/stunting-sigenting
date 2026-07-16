@@ -11,11 +11,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PasswordResetController;
 
 // ================= LANDING PAGE =================
-Route::get('/', function () {
+use App\Http\Controllers\LandingController;
 
-    return view('landing');
-
-});
+// Mengarahkan URL utama ke method index di LandingController
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // ================= LOGIN =================
 Route::get('/login', [

@@ -48,6 +48,26 @@
         @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,-50px)} }
         @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,30px)} }
 
+        /* ── Gov Top Bar ── */
+        .gov-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+            height: 34px;
+            background: linear-gradient(90deg, #0c4a6e, #075985);
+            display: flex; align-items: center;
+            padding: 0 32px;
+        }
+        .gov-bar-inner {
+            width: 100%; max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .gov-bar-left { display: flex; align-items: center; gap: 8px; }
+        .gov-bar-left span { font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,0.92); letter-spacing: 0.01em; }
+        .gov-bar-flag { display: flex; height: 11px; width: 16px; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); flex-shrink: 0; }
+        .gov-bar-flag div { flex: 1; }
+        .gov-bar-right { display: flex; align-items: center; gap: 18px; }
+        .gov-bar-right a { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.78); transition: color 0.2s; }
+        .gov-bar-right a:hover { color: white; }
+
         /* ── Navbar ── */
         .navbar {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -64,6 +84,14 @@
             display: flex; align-items: center; justify-content: space-between;
         }
         .nav-logo { display: flex; align-items: center; gap: 12px; }
+        .logo-village {
+            width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+            background: white; border: 2px solid #075985;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px;
+            box-shadow: 0 2px 8px rgba(7,89,133,0.20);
+        }
+        .logo-divider { width: 1px; height: 30px; background: #e2e8f0; }
         .logo-box {
             width: 42px; height: 42px; border-radius: 14px; flex-shrink: 0;
             background: linear-gradient(135deg, #0284c7, #0ea5e9);
@@ -98,7 +126,7 @@
             position: relative; z-index: 1;
             min-height: 100vh;
             display: flex; align-items: center;
-            padding: 100px 32px 60px;
+            padding: 132px 32px 60px;
         }
         .hero-inner {
             width: 100%; max-width: 1200px; margin: 0 auto;
@@ -242,6 +270,38 @@
             background: linear-gradient(90deg, transparent, rgba(14,165,233,0.14) 30%, rgba(14,165,233,0.14) 70%, transparent);
         }
 
+        /* ── Profil Desa ── */
+        .profil {
+            position: relative; z-index: 1; padding: 70px 32px;
+        }
+        .profil-box {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 1.1fr 1fr;
+            gap: 48px; align-items: center;
+            background: white; border: 1px solid #f1f5f9;
+            border-radius: 32px; padding: 52px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+        }
+        .profil-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #075985; margin-bottom: 16px; }
+        .profil-title { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(22px, 3vw, 32px); color: #0f172a; line-height: 1.18; letter-spacing: -0.02em; margin-bottom: 16px; }
+        .profil-desc { font-size: 14.5px; color: #64748b; line-height: 1.85; font-weight: 300; margin-bottom: 8px; }
+        .profil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .profil-card {
+            background: #f8faff; border: 1px solid #eef2f9; border-radius: 18px;
+            padding: 20px 18px; text-align: center;
+        }
+        .profil-val { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 24px; color: #075985; line-height: 1; margin-bottom: 6px; }
+        .profil-lbl { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: 0.03em; }
+
+        @media (max-width: 1024px) {
+            .profil-box { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .profil { padding: 40px 16px; }
+            .profil-box { padding: 30px 22px; border-radius: 24px; gap: 28px; }
+            .profil-grid { gap: 12px; }
+        }
+
         /* ── Features ── */
         .features { position: relative; z-index: 1; padding: 80px 32px 60px; }
         .features-inner { max-width: 1200px; margin: 0 auto; }
@@ -366,7 +426,7 @@
             position: relative; z-index: 1;
             background: white; border-top: 1px solid #f1f5f9;
             padding: 24px 32px;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; justify-content: center;
         }
         .footer-left { display: flex; align-items: center; gap: 10px; }
         .footer-logo-box { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, #0284c7, #0ea5e9); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 14px; color: white; }
@@ -387,14 +447,19 @@
         }
 
         @media (max-width: 768px) {
-            .navbar { padding: 0 16px; height: 60px; }
+            .gov-bar { padding: 0 14px; height: 30px; }
+            .gov-bar-left span { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 210px; }
+            .gov-bar-right { display: none; }
+            .navbar { top: 0px; padding: 0 16px; height: 60px; }
+            .logo-village { width: 34px; height: 34px; font-size: 15px; }
+            .logo-divider { display: none; }
             .logo-tagline { display: none; }
             .logo-box { width: 36px; height: 36px; font-size: 17px; border-radius: 11px; }
             .logo-name { font-size: 16px; }
             .btn-outline { display: none; } /* hide register on mobile, available in hero */
             .btn-solid { padding: 8px 16px; font-size: 13px; }
 
-            .hero { padding: 80px 16px 50px; }
+            .hero { padding: 108px 16px 50px; }
             .hero-h1 { font-size: 34px; }
             .hero-desc { font-size: 15px; }
             .hero-cta { flex-direction: column; width: 100%; }
@@ -433,20 +498,16 @@
 </head>
 <body>
 
-    <!-- Orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
     <!-- ═══════ NAVBAR ═══════ -->
     <nav class="navbar">
         <div class="navbar-inner">
 
             <a href="#" class="nav-logo">
+                <div class="logo-divider"></div>
                 <div class="logo-box">S</div>
                 <div>
                     <div class="logo-name">SIGENTING</div>
-                    <div class="logo-tagline">Sistem Generasi Anti Stunting</div>
+                    <div class="logo-tagline">Sistem Generasi Anti Stunting | Pemerintah Desa Ngunggahan</div>
                 </div>
             </a>
 
@@ -469,9 +530,9 @@
             <div class="hero-left">
 
                 <h1 class="hero-h1">
-                    Pantau<br>
-                    <span class="grad">Tumbuh Kembang</span><br>
-                    Anak Dengan Cerdas
+                    Ciptakan<br>
+                    <span class="grad">Generasi Ngunggahan</span><br>
+                    Tanpa Stunting
                 </h1>
 
                 <p class="hero-desc">
@@ -542,6 +603,44 @@
     </section>
 
     <div class="divider"></div>
+
+    <!-- ═══════ PROFIL DESA ═══════ -->
+    <section class="profil">
+        <div class="profil-box">
+            <div>
+                <div class="profil-eyebrow">🏘️ Tentang Desa Ngunggahan</div>
+                <h2 class="profil-title">Berkomitmen Mewujudkan Generasi Ngunggahan yang Sehat dan Bebas Stunting</h2>
+                <p class="profil-desc">
+                    Desa Ngunggahan, Kecamatan Eromoko, Kabupaten Wonogiri, menghadirkan
+                    SIGENTING sebagai wujud nyata komitmen pemerintah desa dalam mempercepat penurunan
+                    stunting melalui pemantauan gizi balita yang terpadu, transparan, dan berbasis data.
+                </p>
+                <p class="profil-desc">
+                    Aplikasi ini dikembangkan bersama kader Posyandu dan Tim Percepatan Penurunan Stunting (TPPS)
+                    tingkat desa untuk mendukung layanan kesehatan ibu dan anak yang lebih dekat dengan warga.
+                </p>
+            </div>
+            <div class="profil-grid">
+                <div class="profil-card">
+                    <div class="profil-val">7</div>
+                    <div class="profil-lbl">DUSUN</div>
+                </div>
+                <div class="profil-card">
+                    <div class="profil-val">7</div>
+                    <div class="profil-lbl">POSYANDU AKTIF</div>
+                </div>
+                <div class="profil-card">
+                    <div class="profil-val">{{ $totalAnak ?? 0 }}</div>
+                    <div class="profil-lbl">ANAK TERPANTAU</div>
+                </div>
+
+                <div class="profil-card">
+                    <div class="profil-val">{{ $totalKader ?? 0 }}</div>
+                    <div class="profil-lbl">KADER POSYANDU</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ═══════ FEATURES ═══════ -->
     <section class="features">
@@ -620,9 +719,8 @@
     <footer>
         <div class="footer-left">
             <div class="footer-logo-box">S</div>
-            <span class="footer-text">© 2025 <b>SIGENTING</b> — Sistem Generasi Anti Stunting</span>
+            <span class="footer-text">© 2026 <b>SIGENTING</b> — Sistem Generasi Anti Stunting</span>
         </div>
-        <span class="footer-text">Dibuat dengan ❤️ untuk kesehatan anak Indonesia</span>
     </footer>
 
 </body>

@@ -159,6 +159,8 @@
                         <th class="px-8 py-4 text-left text-xs font-bold
                                    uppercase tracking-wider text-slate-500">Nama Anak</th>
                         <th class="px-8 py-4 text-left text-xs font-bold
+                                   uppercase tracking-wider text-slate-500">NIK Anak</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold
                                    uppercase tracking-wider text-slate-500">Orang Tua</th>
                         <th class="px-8 py-4 text-left text-xs font-bold
                                    uppercase tracking-wider text-slate-500">JK</th>
@@ -191,6 +193,12 @@
                             <td class="px-8 py-5">
                                 <span class="font-bold text-slate-800 text-sm">
                                     {{ $item->nama_anak }}
+                                </span>
+                            </td>
+
+                            <td class="px-8 py-5">
+                                <span class="font-bold text-slate-800 text-sm">
+                                    {{ $item->nik }}
                                 </span>
                             </td>
 

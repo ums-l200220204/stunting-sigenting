@@ -42,7 +42,7 @@
             <h1 class="font-extrabold text-white leading-[1.1] tracking-tight mb-4 md:mb-6
                        text-3xl sm:text-4xl md:text-5xl xl:text-[3.5rem]"
                 style="font-family:'Sora',sans-serif;">
-                Ciptakan Generasi<br>
+                Ciptakan Generasi Ngunggahan<br>
                 <span style="color:#FD4BC7;">Tanpa Stunting</span>
             </h1>
 

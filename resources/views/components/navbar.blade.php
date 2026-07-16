@@ -34,16 +34,23 @@
 
         </button>
 
-        {{-- LOGO --}}
+        {{-- DIVIDER --}}
+        <div class="hidden sm:block w-px h-8 lg:h-10 bg-white/25"></div>
+
+        {{-- LOGO APLIKASI + IDENTITAS DESA --}}
         <div class="flex flex-col justify-center mt-0.5">
 
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black
-                       text-white tracking-tight leading-none">
-                SIGENTING
-            </h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl font-black
+                           text-white tracking-tight leading-none">
+                    SIGENTING
+                </h1>
+            </div>
 
-            <p class="text-[10px] sm:text-xs lg:text-sm text-white/80 mt-1">
+            <p class="text-[10px] sm:text-xs lg:text-sm text-white/80 mt-1 leading-tight">
                 Sistem Generasi Anti Stunting
+                <span class="text-white/50 mx-1">·</span>
+                Pemerintah Desa Ngunggahan
             </p>
 
         </div>

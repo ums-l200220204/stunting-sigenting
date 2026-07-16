@@ -118,6 +118,14 @@
                     {{-- LEFT --}}
                     <div class="space-y-6">
 
+                        {{-- NIK Anak --}}
+                        <div class="field-group">
+                            <label class="block text-sm font-bold text-[#1E293B] mb-2">NIK Anak</label>
+                            <input type="text" name="nik_anak" required value="{{ old('nik_anak', $anak->nik) }}" 
+                                maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full h-14 rounded-2xl border border-[#E5EDF6] bg-white px-5 shadow-sm focus:ring-2 focus:ring-blue-200">
+                        </div>
+
                         {{-- NAMA ANAK --}}
                         <div>
 
@@ -205,6 +213,14 @@
 
                     {{-- RIGHT --}}
                     <div class="space-y-6">
+
+                        {{-- NIK Orang Tua --}}
+                        <div class="field-group">
+                            <label class="block text-sm font-bold text-[#1E293B] mb-2">NIK Orang Tua</label>
+                            <input type="text" name="nik" required value="{{ old('nik', $anak->nik_orangtua) }}" 
+                                maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full h-14 rounded-2xl border border-[#E5EDF6] bg-white px-5 shadow-sm focus:ring-2 focus:ring-blue-200">
+                        </div>
 
                         {{-- NAMA ORANG TUA --}}
                         <div>

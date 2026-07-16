@@ -119,38 +119,38 @@
                 <p class="ml-4 sm:ml-5 text-xs sm:text-sm text-[#64748B]">Data identitas anak dan orang tua.</p>
             </div>
 
-            {{-- Info Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {{-- Info Grid: 5 kartu, dibuat lebih compact namun tetap 1 baris rapi di layar besar --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
 
                 {{-- Nama Anak --}}
-                <div class="bg-gradient-to-br from-[#F0F6FF] to-[#E8F0FD] rounded-2xl p-4 sm:p-5 border border-[#D4E4F7] transition-all duration-200 ease-in-out hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#0062A3]/10 flex items-center justify-center text-sm">👤</div>
-                        <p class="text-[10px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wide">Nama Anak</p>
+                <div class="bg-gradient-to-br from-[#F0F6FF] to-[#E8F0FD] rounded-xl p-3 sm:p-3.5 border border-[#D4E4F7] transition-all duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(0,0,0,0.07)]">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#0062A3]/10 flex items-center justify-center text-xs">👤</div>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">Nama Anak</p>
                     </div>
-                    <p class="text-lg sm:text-xl font-black text-[#0D1B2E] leading-tight">{{ $anak->nama_anak }}</p>
+                    <p class="text-sm sm:text-base font-black text-[#0D1B2E] leading-tight break-words">{{ $anak->nama_anak }}</p>
                 </div>
 
                 {{-- Jenis Kelamin --}}
-                <div class="bg-gradient-to-br from-[#FFF0FA] to-[#FCE8F6] rounded-2xl p-4 sm:p-5 border border-[#F2C8EA] transition-all duration-200 ease-in-out hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FD4BC7]/10 flex items-center justify-center text-sm">
+                <div class="bg-gradient-to-br from-[#FFF0FA] to-[#FCE8F6] rounded-xl p-3 sm:p-3.5 border border-[#F2C8EA] transition-all duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(0,0,0,0.07)]">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#FD4BC7]/10 flex items-center justify-center text-xs">
                             {{ $isLaki ? '♂' : '♀' }}
                         </div>
-                        <p class="text-[10px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wide">Jenis Kelamin</p>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">Jenis Kelamin</p>
                     </div>
-                    <p class="text-lg sm:text-xl font-black text-[#C4178E] leading-tight">{{ $isLaki ? 'Laki-Laki' : 'Perempuan' }}</p>
+                    <p class="text-sm sm:text-base font-black text-[#C4178E] leading-tight">{{ $isLaki ? 'Laki-Laki' : 'Perempuan' }}</p>
                 </div>
 
                 {{-- Usia --}}
-                <div class="bg-gradient-to-br from-[#EEF7FF] to-[#E0EFFC] rounded-2xl p-4 sm:p-5 border border-[#C6DFFA] transition-all duration-200 ease-in-out hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#0078C1]/10 flex items-center justify-center text-sm">🎂</div>
-                        <p class="text-[10px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wide">Usia</p>
+                <div class="bg-gradient-to-br from-[#EEF7FF] to-[#E0EFFC] rounded-xl p-3 sm:p-3.5 border border-[#C6DFFA] transition-all duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(0,0,0,0.07)]">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#0078C1]/10 flex items-center justify-center text-xs">🎂</div>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">Usia</p>
                     </div>
-                    <p class="text-lg sm:text-xl font-black text-[#004F87] leading-tight">
+                    <p class="text-sm sm:text-base font-black text-[#004F87] leading-tight">
                         @if($tahun > 0)
-                            {{ $tahun }} Tahun @if($bulan > 0) {{ $bulan }} Bulan @endif
+                            {{ $tahun }} Thn @if($bulan > 0) {{ $bulan }} Bln @endif
                         @else
                             {{ $bulan }} Bulan
                         @endif
@@ -158,14 +158,23 @@
                 </div>
 
                 {{-- Tanggal Lahir --}}
-                <div class="bg-gradient-to-br from-[#F0FFF8] to-[#E0FAF0] rounded-2xl p-4 sm:p-5 border border-[#B8EED6] transition-all duration-200 ease-in-out hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#00A86B]/10 flex items-center justify-center text-sm">📅</div>
-                        <p class="text-[10px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wide">Tanggal Lahir</p>
+                <div class="bg-gradient-to-br from-[#F0FFF8] to-[#E0FAF0] rounded-xl p-3 sm:p-3.5 border border-[#B8EED6] transition-all duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(0,0,0,0.07)]">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#00A86B]/10 flex items-center justify-center text-xs">📅</div>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">Tanggal Lahir</p>
                     </div>
-                    <p class="text-lg sm:text-xl font-black text-[#007A4D] leading-tight">
+                    <p class="text-sm sm:text-base font-black text-[#007A4D] leading-tight">
                         {{ \Carbon\Carbon::parse($anak->tanggal_lahir)->format('d M Y') }}
                     </p>
+                </div>
+
+                {{-- NIK Anak --}}
+                <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-[#F0F6FF] to-[#E8F0FD] rounded-xl p-3 sm:p-3.5 border border-[#D4E4F7] transition-all duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(0,0,0,0.07)]">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#0062A3]/10 flex items-center justify-center text-xs">🆔</div>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">NIK Anak</p>
+                    </div>
+                    <p class="text-sm sm:text-base font-black text-[#0D1B2E] leading-tight break-all">{{ $anak->nik }}</p>
                 </div>
 
             </div>
@@ -183,9 +192,12 @@
                         <p class="text-[10px] sm:text-xs text-[#64748B]">Informasi kontak dan identitas wali</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                {{-- 4 kartu -> dibuat 2 kolom di layar sedang, 4 kolom di layar besar 
+                     supaya tidak ada kartu yang menggantung sendiri di baris terakhir --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
                     @foreach([
                         ['label' => 'Nama Orang Tua', 'value' => $anak->nama_orangtua, 'icon' => '👤'],
+                        ['label' => 'NIK Orang Tua',  'value' => $anak->nik_orangtua, 'icon' => '🆔'],
                         ['label' => 'Email',          'value' => $anak->email,          'icon' => '✉️'],
                         ['label' => 'Nomor HP',       'value' => $anak->nomor_hp,       'icon' => '📱'],
                     ] as $item)

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Anak;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -36,41 +37,86 @@ class AuthController extends Controller
         // =========================
         $request->validate([
 
-            'login' => 'required',
+            'nik' => 'required',
 
             'password' => 'required'
 
         ], [
 
-            'login.required' => 'Email atau Nomor HP wajib diisi.',
+            'nik.required' => 'NIK wajib diisi.',
 
             'password.required' => 'Password wajib diisi.'
 
         ]);
 
         // =========================
-        // CARI USER
+        // SKENARIO 1: CARI NIK ANAK (UNTUK ORANG TUA)
+        // =========================
+        $anak = Anak::where(
+
+                'nik',
+                $request->nik
+
+            )->first();
+
+        if ($anak) {
+
+            // Ambil data user (orang tua) dari relasi
+            $user = $anak->user;
+
+            // =========================
+            // CEK PASSWORD ORANG TUA
+            // =========================
+            if ($user && Hash::check(
+
+                $request->password,
+                $user->password
+
+            )) {
+
+                // =========================
+                // LOGIN ORANG TUA
+                // =========================
+                Auth::guard('orangtua')
+                    ->login($user);
+
+                $request->session()
+                    ->regenerate();
+
+                // Simpan ID anak yang sedang dipakai login ke session
+                session(['anak_aktif_id' => $anak->id]);
+
+                return redirect('/orangtua');
+
+            } else {
+
+                // =========================
+                // PASSWORD SALAH
+                // =========================
+                return back()->withErrors([
+
+                    'password' => 'Password yang Anda masukkan salah.'
+
+                ])->onlyInput('nik');
+
+            }
+
+        }
+
+        // =========================
+        // SKENARIO 2: CARI NIK USER (UNTUK ADMIN/KADER)
         // =========================
         $user = User::where(
 
-                'email',
-                $request->login
+                'nik',
+                $request->nik
 
-            )
-
-            ->orWhere(
-
-                'nomor_hp',
-                $request->login
-
-            )
-
-            ->first();
+            )->first();
 
         // =========================
         // CEK USER
         // =========================
-        if ($user) {
+        if ($user && in_array($user->role, ['admin', 'kader'])) {
 
             // =========================
             // CEK PASSWORD
@@ -112,19 +158,6 @@ class AuthController extends Controller
 
                 }
 
-                // ORANG TUA
-                else {
-
-                    Auth::guard('orangtua')
-                        ->login($user);
-
-                    $request->session()
-                        ->regenerate();
-
-                    return redirect('/orangtua');
-
-                }
-
             } else {
 
                 // =========================
@@ -134,22 +167,20 @@ class AuthController extends Controller
 
                     'password' => 'Password yang Anda masukkan salah.'
 
-                ])->onlyInput('login');
+                ])->onlyInput('nik');
 
             }
 
-        } else {
+        } 
 
-            // =========================
-            // EMAIL / NOMOR HP SALAH
-            // =========================
-            return back()->withErrors([
+        // =========================
+        // NIK TIDAK DITEMUKAN
+        // =========================
+        return back()->withErrors([
 
-                'login' => 'Email atau Nomor HP tidak terdaftar.'
+            'nik' => 'NIK tidak terdaftar sebagai data anak maupun petugas.'
 
-            ])->onlyInput('login');
-
-        }
+        ])->onlyInput('nik');
 
     }
 
@@ -174,6 +205,8 @@ class AuthController extends Controller
         // =========================
         $request->validate([
 
+            'nik' => 'required|size:16|unique:users,nik',
+
             'nama' => 'required',
 
             'email' => 'required|email|unique:users,email',
@@ -183,6 +216,8 @@ class AuthController extends Controller
             'alamat' => 'required',
 
             'password' => 'required|min:6',
+
+            'nik_anak' => 'required|size:16|unique:anak,nik',
 
             'nama_anak' => 'required',
 
@@ -196,6 +231,8 @@ class AuthController extends Controller
         // SIMPAN USER
         // =========================
         $user = User::create([
+
+            'nik' => $request->nik,
 
             'nama' => $request->nama,
 
@@ -229,6 +266,8 @@ class AuthController extends Controller
         DB::table('anak')->insert([
 
             'user_id' => $user->id,
+
+            'nik' => $request->nik_anak,
 
             'nama_anak' => $request->nama_anak,
 
@@ -270,18 +309,25 @@ class AuthController extends Controller
     public function checkForgotPassword(Request $request)
     {
         $request->validate([
-            'login' => 'required'
+            'nik' => 'required|size:16'
         ], [
-            'login.required' => 'Email atau Nomor HP wajib diisi'
+            'nik.required' => 'NIK wajib diisi',
+            'nik.size' => 'NIK harus 16 digit'
         ]);
 
-        // Cari user berdasarkan email atau nomor HP
-        $user = User::where('email', $request->login)
-                    ->orWhere('nomor_hp', $request->login)
-                    ->first();
+        // Cari user (Petugas) berdasarkan NIK
+        $user = User::where('nik', $request->nik)->first();
+
+        // Jika bukan NIK Petugas, cari NIK Anak lalu panggil data Orang Tua-nya
+        if (!$user) {
+            $anak = Anak::where('nik', $request->nik)->first();
+            if ($anak) {
+                $user = $anak->user;
+            }
+        }
 
         if (!$user) {
-            return back()->with('error', 'Email atau Nomor HP tidak ditemukan');
+            return back()->with('error', 'NIK tidak ditemukan');
         }
 
         // Generate dan Kirim Email Token (bawaan Laravel)

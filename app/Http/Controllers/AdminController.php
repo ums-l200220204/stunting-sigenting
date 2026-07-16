@@ -67,6 +67,17 @@ class AdminController extends Controller
                     'anak.nama_anak',
                     'like',
                     '%' . $request->search . '%'
+                )
+                
+                ->orWhere(
+                'anak.nik',
+                'like',
+                '%' . $request->search . '%'
+                )
+                ->orWhere(
+                    'users.nik',
+                    'like',
+                    '%' . $request->search . '%'
                 );
             });
         }
@@ -213,6 +224,8 @@ class AdminController extends Controller
                 'role' =>
                     'required',
 
+                'nik'  => 'required|size:16|unique:users,nik',
+
                 'nama' =>
                     'required|max:255',
 
@@ -242,6 +255,8 @@ class AdminController extends Controller
 
                 'role' =>
                     'required',
+
+                'nik_anak' => 'required|size:16|unique:anak,nik',
 
                 'nama' =>
                     'required|max:255',
@@ -276,6 +291,8 @@ class AdminController extends Controller
         $userId = DB::table('users')
 
             ->insertGetId([
+
+                'nik'           => $request->nik,
 
                 'nama' =>
                     $request->nama,
@@ -315,6 +332,8 @@ class AdminController extends Controller
 
                 'user_id' =>
                     $userId,
+
+                'nik'           => $request->nik_anak,
 
                 'nama_anak' =>
                     $request->nama_anak,
@@ -400,6 +419,8 @@ class AdminController extends Controller
         // =========================
         $request->validate([
 
+            'nik'      => 'required|size:16|unique:users,nik,' . $id,
+
             'nama' =>
                 'required|max:255',
 
@@ -425,6 +446,8 @@ class AdminController extends Controller
             )
 
             ->update([
+
+                'nik'        => $request->nik,
 
                 'nama' =>
                     $request->nama,
@@ -467,6 +490,8 @@ class AdminController extends Controller
                 )
 
                 ->update([
+
+                    'nik'        => $request->nik_anak,
 
                     'nama_anak' =>
                         $request->nama_anak,

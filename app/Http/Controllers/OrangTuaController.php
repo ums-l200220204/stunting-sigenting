@@ -288,48 +288,51 @@ class OrangTuaController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Validasi input form
+        // 1. Validasi input form (DITAMBAHKAN VALIDASI NIK)
         $request->validate([
             // Data Orang Tua
+            'nik'           => 'required|size:16|unique:users,nik,' . $user->id, // Validasi NIK OT
             'nama'          => 'required',
             'email'         => 'required|email|unique:users,email,' . $user->id,
             'nomor_hp'      => 'required',
             'alamat'        => 'required',
             
             // Data Anak
+            'nik_anak'      => 'required|size:16|unique:anak,nik,' . ($request->anak_id ?? 'NULL') . ',id', // Validasi NIK Anak
             'nama_anak'     => 'required',
             'jenis_kelamin' => 'required',
             'tanggal_lahir' => 'required|date|before_or_equal:today',
         ], [
+            'nik.size' => 'NIK Orang Tua harus 16 digit.',
+            'nik_anak.size' => 'NIK Anak harus 16 digit.',
             'tanggal_lahir.before_or_equal' => 'Tanggal lahir anak tidak boleh melebihi hari ini.',
         ]);
 
         // 2. Proses Update dengan Try-Catch
         try {
             // Update Data User (Orang Tua)
-            $userData = [
+            DB::table('users')->where('id', $user->id)->update([
+                'nik'        => $request->nik, // SIMPAN NIK ORANG TUA
                 'nama'       => $request->nama,
                 'email'      => $request->email,
                 'nomor_hp'   => $request->nomor_hp,
                 'alamat'     => $request->alamat,
                 'updated_at' => now(),
-            ];
-
-            DB::table('users')->where('id', $user->id)->update($userData);
+            ]);
 
             // Update Data Anak
             DB::table('anak')->where('user_id', $user->id)->update([
+                'nik'           => $request->nik_anak, // SIMPAN NIK ANAK
                 'nama_anak'     => $request->nama_anak,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'updated_at'    => now(),
             ]);
 
-            return back()->with('success', 'Profil dan data anak berhasil diperbarui!');
+            return back()->with('success', 'Profil dan NIK berhasil diperbarui!');
 
         } catch (\Exception $e) {
-            // Jika terjadi kegagalan (misal database error), kembalikan dengan pesan error
-            return back()->with('error', 'Terjadi kesalahan sistem saat memperbarui profil. Silakan coba lagi.')->withInput();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
         }
     }
 
