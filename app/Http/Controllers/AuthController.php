@@ -306,44 +306,58 @@ class AuthController extends Controller
     // =========================
     // CEK AKUN & KIRIM EMAIL TOKEN
     // =========================
+// =========================
+    // CEK AKUN & KIRIM EMAIL TOKEN
+    // =========================
     public function checkForgotPassword(Request $request)
     {
+        // 1. Ubah validasi mencari input 'login' sesuai form HTML Anda
         $request->validate([
-            'nik' => 'required|size:16'
+            'login' => 'required'
         ], [
-            'nik.required' => 'NIK wajib diisi',
-            'nik.size' => 'NIK harus 16 digit'
+            'login.required' => 'Email atau NIK wajib diisi'
         ]);
 
-        // Cari user (Petugas) berdasarkan NIK
-        $user = User::where('nik', $request->nik)->first();
+        $inputData = $request->login;
 
-        // Jika bukan NIK Petugas, cari NIK Anak lalu panggil data Orang Tua-nya
+        // 2. Cari user (Petugas/Orang tua) berdasarkan Email ATAU NIK
+        $user = User::where('email', $inputData)
+                    ->orWhere('nik', $inputData)
+                    ->first();
+
+        // 3. Jika bukan NIK/Email User, cari berdasarkan NIK Anak
         if (!$user) {
-            $anak = Anak::where('nik', $request->nik)->first();
+            $anak = Anak::where('nik', $inputData)->first();
             if ($anak) {
                 $user = $anak->user;
             }
         }
 
+        // Jika tidak ditemukan sama sekali
         if (!$user) {
-            return back()->with('error', 'NIK tidak ditemukan');
+            return back()->with('error', 'Data tidak ditemukan di sistem kami.');
         }
 
-        // Generate dan Kirim Email Token (bawaan Laravel)
+        // 4. Pastikan akun tersebut memiliki email yang tersimpan (karena reset token dikirim via email)
+        if (empty($user->email)) {
+            return back()->with('error', 'Akun ini tidak memiliki alamat email. Silakan hubungi Admin via WA.');
+        }
+
+        // 5. Generate dan Kirim Email Token (bawaan Laravel)
         $status = Password::broker()->sendResetLink(
             ['email' => $user->email]
         );
 
+        // 6. Cek status pengiriman
         if ($status === Password::RESET_LINK_SENT) {
-            // Sensor email sedikit untuk keamanan pesan
+            // Sensor email sedikit untuk keamanan pesan (misal: st***@gmail.com)
             $emailParts = explode("@", $user->email);
             $maskedEmail = substr($emailParts[0], 0, 2) . '***@' . end($emailParts);
 
             return back()->with('success', 'Link reset password telah dikirim ke email: ' . $maskedEmail);
         }
 
-        return back()->with('error', 'Gagal mengirim link reset password. Coba lagi nanti.');
+        return back()->with('error', 'Gagal mengirim link reset password. Periksa kembali koneksi server email.');
     }
 
     // =========================
